@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "459184878379",
+    "project_id": "school-b3300",
+    "storage_bucket": "school-b3300.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459184878379:android:324d02df6b0e499cdccb6e",
+        "android_client_info": {
+          "package_name": "com.example.school"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSp_3VmacZ3w1L4kZTuUNmM6AAXJOIIHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
