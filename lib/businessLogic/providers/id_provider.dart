@@ -10,6 +10,7 @@ class IdProvider with ChangeNotifier {
   String _teacherId="";
   String _classId='';
   String _subjectId="";
+  String _salaryId="";
 
 
   String get studentId => _studentId;
@@ -18,7 +19,14 @@ class IdProvider with ChangeNotifier {
   String get teacherId=>_teacherId;
   String get classId=>_classId;
   String get subjectId=>_subjectId;
+  String get salaryId=>_salaryId;
 
+
+
+  Future<void> generateSalaryID() async {
+    _salaryId = await IDService.generateUniqueID(CommonKeys.SALARY_ID_KEY);
+    notifyListeners();  // Notify listeners to update UI
+  }
 
   Future<void> generateSubjectID() async {
     _subjectId = await IDService.generateUniqueID(CommonKeys.SUBJECT_ID_KEY);

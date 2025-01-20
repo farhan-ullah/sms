@@ -8,7 +8,7 @@ class PayslipScreen extends StatefulWidget {
   final String employeeId;
   final String employeeName;
 
-  PayslipScreen({required this.employeeId, required this.employeeName});
+  PayslipScreen({super.key, required this.employeeId, required this.employeeName});
 
   @override
   _PayslipScreenState createState() => _PayslipScreenState();

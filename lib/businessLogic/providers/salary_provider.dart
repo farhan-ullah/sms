@@ -2,9 +2,45 @@ import 'package:flutter/material.dart';
 import '../../data/models/salary_model.dart';
 
 
+
+
+class SalaryTier {
+  final String role;
+  final double salary;
+
+  SalaryTier({required this.role, required this.salary});
+}
+
+// Creating dummy data for salary tiers
 class SalaryProvider extends ChangeNotifier {
   List<Salary> _salaryRecords = [];
+  List<SalaryTier> dummySalaryTiers = [
+    SalaryTier(role: "Teacher", salary: 30000.0),
+    SalaryTier(role: "Accountant", salary: 40000.0),
+    SalaryTier(role: "Librarian", salary: 35000.0),
+    SalaryTier(role: "Canteen Manager", salary: 25000.0),
+    SalaryTier(role: "HR Manager", salary: 50000.0),
+    SalaryTier(role: "Security Officer", salary: 28000.0),
+    SalaryTier(role: "IT Specialist", salary: 45000.0),
+    SalaryTier(role: "Cleaner", salary: 20000.0),
+    SalaryTier(role: "Receptionist", salary: 32000.0),
+    SalaryTier(role: "Maintenance Technician", salary: 35000.0),
+    SalaryTier(role: "Marketing Manager", salary: 60000.0),
+  ];
 
+  // Getter for salary history (this will be used to fetch all salaries for a given employee)
+  List<Salary> getSalaryHistory(String employeeId) {
+    return _salaryRecords.where((salary) => salary.employeeId == employeeId).toList();
+  }
+
+  // Dummy method to create a new salary
+  void createNewSalary(Salary salary) {
+    // Simulate saving the salary to the list
+    _salaryRecords.add(salary);
+
+    // Notify listeners that the salary history has been updated
+    notifyListeners();
+  }
   List<Salary> get salaryRecords => _salaryRecords;
 
   // Add a new salary record
@@ -13,10 +49,6 @@ class SalaryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Get salary history of an employee by ID
-  List<Salary> getSalaryHistory(String employeeId) {
-    return _salaryRecords.where((salary) => salary.employeeId == employeeId).toList();
-  }
 
   // Generate a report for a specific month and year
   List<Salary> generateSalaryReport(String month, String year) {

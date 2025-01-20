@@ -19,6 +19,7 @@ import 'package:school/services/id_service/id_service.dart';
 import 'package:school/ui/presentation/navigation_screen.dart';
 import 'businessLogic/providers/id_provider.dart';
 import 'businessLogic/providers/inventory_provider.dart';
+import 'businessLogic/providers/transport_route_provider.dart';
 import 'constants/common_keys.dart';
 
 void main() async {
@@ -56,6 +57,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(
+          create: (context) => TransportRouteProvider(),
+
+        ),
         ChangeNotifierProvider(
           create: (context) => StudentProvider(),
 

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:school/businessLogic/providers/class_name_provider.dart';
 import 'package:school/businessLogic/providers/fee_provider.dart';
 import 'package:school/businessLogic/providers/student_provider.dart';
 import 'package:school/data/models/classNameModel/class_name_model.dart';
 import 'package:school/data/models/student_model/student_model.dart';
+import '../../../data/models/fee_generation_receipt_model.dart';
+
 
 class GenerateFeeScreen extends StatefulWidget {
   const GenerateFeeScreen({super.key});
@@ -22,10 +23,15 @@ class _GenerateFeeScreenState extends State<GenerateFeeScreen> with TickerProvid
   String? dueDateFilter;
   String searchQuery = "";
 
+  final Map<String, Receipt> studentReceipts = {}; // Map to store student receipts
+  final List<String> feeTypes = [
+    "Tuition Fee", "Admission Fee", "Transport Fee", "Lab Fee", "Sports Fee", "Fine", "Other"
+  ];
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 7, vsync: this); // 7 tabs for the 7 fee types
+    _tabController = TabController(length: feeTypes.length, vsync: this);
   }
 
   @override
@@ -39,26 +45,26 @@ class _GenerateFeeScreenState extends State<GenerateFeeScreen> with TickerProvid
     final feeProvider = Provider.of<FeeProvider>(context);
     final studentProvider = Provider.of<StudentProvider>(context);
 
-
     List<StudentModel> studentData = studentProvider.mockStudentList;
 
-    // Filter students based on selected filters
-    // List<StudentModel> filteredStudents = _filterStudents(studentData);
+    // Apply the filters
+    List<StudentModel> filteredStudents = _filterStudents(studentData);
+    String selectedMonth = 'January';
+    String selectedYear = '2025';
+
+    // List of months and years for the dropdowns
+    final List<String> months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    final List<String> years = ['2025', '2024', '2023', '2022', '2021'];
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Generate Fee"),
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: "Tuition Fee"),
-            Tab(text: "Admission Fee"),
-            Tab(text: "Transport Fee"),
-            Tab(text: "Lab Fee"),
-            Tab(text: "Sports Fee"),
-            Tab(text: "Fine"),
-            Tab(text: "Other"),
-          ],
+          tabs: feeTypes.map((feeType) => Tab(text: feeType)).toList(),
         ),
       ),
       body: Column(
@@ -103,7 +109,6 @@ class _GenerateFeeScreenState extends State<GenerateFeeScreen> with TickerProvid
                 SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () {
-                    // Reset the filters to default values
                     setState(() {
                       selectedClass = null;
                       selectedFeeType = null;
@@ -117,23 +122,13 @@ class _GenerateFeeScreenState extends State<GenerateFeeScreen> with TickerProvid
               ],
             ),
           ),
-
           // TabView displaying different fee types
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                _buildAdmissionFeeTab(),
-                _buildAdmissionFeeTab(),
-                _buildAdmissionFeeTab(),
-                _buildAdmissionFeeTab(),
-                _buildAdmissionFeeTab(),
-                _buildAdmissionFeeTab(),
-                _buildAdmissionFeeTab(),
-
-
-                // _buildFeeTab(filteredStudents, "Other"),
-              ],
+              children: feeTypes.map((feeType) {
+                return _buildFeeTypeTab(filteredStudents, feeType, years, months, selectedYear, selectedMonth);
+              }).toList(),
             ),
           ),
         ],
@@ -141,230 +136,783 @@ class _GenerateFeeScreenState extends State<GenerateFeeScreen> with TickerProvid
     );
   }
 
-  // Widget _buildFeeTab(List<StudentModel> students, String feeType) {
-  //   return ValueListenableBuilder(
-  //     valueListenable: Boxes.getStudents().listenable(),
-  //     builder: (context, value, child) {
-  //       List<StudentModel> filteredStudents = _filterStudents(students);
-  //       if (filteredStudents.isEmpty) {
-  //         return Center(child: Text("No students found with the selected filters."));
-  //       }
-  //
-  //       return ListView.builder(
-  //         itemCount: filteredStudents.length,
-  //         itemBuilder: (context, index) {
-  //           final student = filteredStudents[index];
-  //
-  //           // Retrieve class data and fee information
-  //           ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
-  //               .getClassByID(student.classID.toString());
-  //           String classFee = Provider.of<FeeProvider>(context)
-  //               .getAdmissionFeeByClass(student.classID.toString())
-  //               .toString();
-  //
-  //           return GestureDetector(
-  //             onTap: () {
-  //               Provider.of<FeeProvider>(context, listen: false).generateFeeForSingleStudent(
-  //                   student.studentId ?? "", feeType, double.parse(classFee), "June");
-  //             },
-  //             child: Card(
-  //               elevation: 4,
-  //               child: Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 children: [
-  //                   SizedBox(width: 30),
-  //                   Expanded(flex: 1, child: Text(student.studentId.toString())),
-  //                   SizedBox(width: 30),
-  //                   Expanded(
-  //                     flex: 2,
-  //                     child: Text("${student.firstName} ${student.lastName}"),
-  //                   ),
-  //                   Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
-  //                   Expanded(flex: 1, child: Text(classFee)),
-  //                   SizedBox(width: 30),
-  //                   ElevatedButton(onPressed: () {}, child: Text("Generate Fee")),
-  //                   SizedBox(width: 30),
-  //                   PopupMenuButton(itemBuilder: (context) {
-  //                     return [
-  //                       PopupMenuItem(
-  //                         child: ListTile(
-  //                           onTap: () {
-  //                             Navigator.pop(context);
-  //                             showFeeDialog("${student.firstName} ${student.lastName}");
-  //                           },
-  //                           title: Text("Add New Fee"),
-  //                           trailing: Icon(FontAwesomeIcons.plus),
-  //                         ),
-  //                       ),
-  //                     ];
-  //                   }),
-  //                 ],
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-  // Widget _buildIt(List<StudentModel> students, String feeType){
-  //   return Consumer<FeeProvider>(
-  //     builder: (BuildContext context, value, Widget? child) {
-  //       List<StudentModel> filteredStudents = _filterStudents(students);
-  //       // if (filteredStudents.isEmpty) {
-  //       //   return Center(
-  //       //       child: Text("No students found with the selected filters."));
-  //       // }
-  //
-  //       return FutureBuilder(future: value.getStudentsWithUnGeneratedFeeForYearAndMonth(2025, "January"),
-  //         builder: (BuildContext context, AsyncSnapshot<List<StudentModel>> snapshot) {
-  //
-  //
-  //         if(!snapshot.hasData){
-  //           return Text("No Student found");
-  //         }
-  //         return ListView.builder(
-  //           itemCount: snapshot.data?.length??0,
-  //           itemBuilder: (context, index) {
-  //             final student = filteredStudents[index];
-  //
-  //             // Retrieve class data and fee information
-  //             ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
-  //                 .getClassByID(student.classID.toString());
-  //             String classFee = Provider.of<FeeProvider>(context)
-  //                 .getTuitionFeeByClass(student.classID.toString())
-  //                 .toString();
-  //
-  //             return GestureDetector(
-  //               onTap: () {
-  //                 Provider.of<FeeProvider>(context, listen: false).generateFeeForSingleStudent(
-  //                     student.studentId ?? "", feeType, double.parse(classFee), "January");
-  //               },
-  //               child: Card(
-  //                 elevation: 4,
-  //                 child: Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     SizedBox(width: 30),
-  //                     Expanded(flex: 1, child: Text(student.studentId.toString())),
-  //                     SizedBox(width: 30),
-  //                     Expanded(
-  //                       flex: 2,
-  //                       child: Text("${student.firstName} ${student.lastName}"),
-  //                     ),
-  //                     Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
-  //                     Expanded(flex: 1, child: Text(classFee)),
-  //                     SizedBox(width: 30),
-  //                     ElevatedButton(onPressed: () {}, child: Text("Generate Fee")),
-  //                     SizedBox(width: 30),
-  //                     PopupMenuButton(itemBuilder: (context) {
-  //                       return [
-  //                         PopupMenuItem(
-  //                           child: ListTile(
-  //                             onTap: () {
-  //                               Navigator.pop(context);
-  //                               showFeeDialog("${student.firstName} ${student.lastName}");
-  //                             },
-  //                             title: Text("Add New Fee"),
-  //                             trailing: Icon(FontAwesomeIcons.plus),
-  //                           ),
-  //                         ),
-  //                       ];
-  //                     }),
-  //                   ],
-  //                 ),
-  //               ),
-  //             );
-  //           },
-  //         );
-  //
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
-  Widget _buildAdmissionFeeTab(){
-    final studentProvider = Provider.of<StudentProvider>(context);
-    return Consumer<FeeProvider>(
-      builder: (BuildContext context, value, Widget? child) {
-        // if (filteredStudents.isEmpty) {
-        //   return Center(
-        //       child: Text("No students found with the selected filters."));
-        // }
+  Widget _buildFeeTypeTab(List<StudentModel> filteredStudents, String feeType,List<String> years, List<String> months,String selectedYear, String selectedMonth) {
+    switch (feeType) {
+      case 'Tuition Fee':
+        return _buildTuitionFeeTab(filteredStudents, selectedMonth, years, months, selectedYear);
+      case 'Admission Fee':
+        return _buildAdmissionFeeTab(filteredStudents, selectedYear, selectedMonth);
+      case 'Transport Fee':
+        return _buildTransportFeeTab(filteredStudents, years, months, selectedMonth, selectedYear);
+      case 'Lab Fee':
+        return _buildLabFeeTab(filteredStudents, selectedYear, selectedMonth);
+      case 'Sports Fee':
+        return _buildSportsFeeTab(filteredStudents, selectedYear, selectedMonth);
+      case 'Fine':
+        return _buildFineTab(filteredStudents, selectedYear, selectedMonth);
+      case 'Other':
+        return _buildOtherFeeTab(filteredStudents, selectedYear, selectedMonth);
+      default:
+        return Container();
+    }
+  }
+  // Tuition Fee Tab
 
-        return FutureBuilder(future: value.getStudentsWithUnGeneratedAdmissionFee(studentProvider),
-          builder: (BuildContext context, AsyncSnapshot<List<StudentModel>> snapshot) {
+  Widget _buildTuitionFeeTab(List<StudentModel> filteredStudents, String selectedMonth, List<String> years, List<String> months, String selectedYear) {
+    return Column(
+      children: [
+        // Month and Year Dropdowns at the top
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Month Dropdown
+              DropdownButton<String>(
+                value: selectedMonth,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedMonth = newValue!;
+                  });
+                },
+                items: months.map<DropdownMenuItem<String>>((String month) {
+                  return DropdownMenuItem<String>(
+                    value: month,
+                    child: Text(month),
+                  );
+                }).toList(),
+              ),
+              SizedBox(width: 20),
 
+              // Year Dropdown
+              DropdownButton<String>(
+                value: selectedYear,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedYear = newValue!;
+                  });
+                },
+                items: years.map<DropdownMenuItem<String>>((String year) {
+                  return DropdownMenuItem<String>(
+                    value: year,
+                    child: Text(year),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
 
-            if(snapshot.data?.isEmpty??false){
-              return Text("No Student found");
-            }
-            return ListView.builder(
-              itemCount: snapshot.data?.length??0,
-              itemBuilder: (context, index) {
-                final student = snapshot.data![index];
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
 
-                // Retrieve class data and fee information
-                ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
-                    .getClassByID(student.classID.toString());
-                String classFee = Provider.of<FeeProvider>(context)
-                    .getAdmissionFeeByClass(student.classID.toString())
-                    .toString();
-               final feeProvider=  Provider.of<FeeProvider>(context, listen: false);
+              // Retrieve class data and fee information (specifically for Tuition Fee)
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFee = Provider.of<FeeProvider>(context)
+                  .getTuitionFeeByClass(student.classID.toString())
+                  .toString();  // Getting the Tuition Fee instead of Sports Fee
 
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation (optional)
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(
+                        flex: 2,
+                        child: Text("${student.firstName} ${student.lastName}"),
+                      ),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFee)),
+                      SizedBox(width: 30),
 
-                return GestureDetector(
-       onTap: (){
-       },
-                  child: Card(
-                    elevation: 4,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(width: 30),
-                        Expanded(flex: 1, child: Text(student.studentId.toString())),
-                        SizedBox(width: 30),
-                        Expanded(
-                          flex: 2,
-                          child: Text("${student.firstName} ${student.lastName}"),
+                      // Generate Fee Button (For Tuition Fee)
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details for Tuition Fee
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Tuition Fee",  // Fee type is set as "Tuition Fee"
+                            feeAmount: double.parse(classFee),  // Store the tuition fee amount
+                            paymentStatus: "Generated",  // Set the payment status as "Generated"
+                            paymentDate: DateTime.now(),  // Store the current date as payment date
+                            month: selectedMonth, // Store the selected month
+                            year: selectedYear,  // Store the selected year
+                          );
+
+                          // Show a snack bar to notify the fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating tuition fee for ${student.firstName}"),
+                          ));
+
+                          // Trigger UI update to show the print receipt button
+                          setState(() {});
+                        },
+                        child: Text("Generate Tuition Fee"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Print Button (only shows after fee is generated and feeType is "Tuition Fee")
+                      if (studentReceipts.containsKey(student.studentId.toString()) &&
+                          studentReceipts[student.studentId.toString()]!.feeType == "Tuition Fee")
+                        ElevatedButton(
+                          onPressed: () {
+                            _printReceipt(studentReceipts[student.studentId.toString()]!); // Print the tuition fee receipt
+                          },
+                          child: Text("Print Tuition Fee Receipt"),
                         ),
-                        Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
-                        Expanded(flex: 1, child: Text(classFee)),
-                        SizedBox(width: 30),
-                        ElevatedButton(onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("It should generate and export fee slip pdf")));
-
-                          ///It should add the fee to the generated fee list by student ID
-                          /// It should add this amount to fee receivable ... i-e debit the fee receivable and credit the fee T account
-                          ///
-                        }, child: Text("Generate Fee")),
-                        SizedBox(width: 30),
-                        PopupMenuButton(itemBuilder: (context) {
-                          return [
-                            PopupMenuItem(
-                              child: ListTile(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  // showFeeDialog("${student.firstName} ${student.lastName}");
-                                },
-                                title: Text("Add New Fee"),
-                                trailing: Icon(FontAwesomeIcons.plus),
-                              ),
-                            ),
-                          ];
-                        }),
-                      ],
-                    ),
+                    ],
                   ),
-                );
-              },
-            );
+                ),
+              );
+            },
+          ),
+        ),
 
-          },
-        );
-      },
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Tuition Fee")));
+            },
+            child: Text("Generate All Fees for Tuition Fee"),
+          ),
+        ),
+      ],
     );
   }
+
+  Widget _buildAdmissionFeeTab(List<StudentModel> filteredStudents, String selectedYear, String selectedMonth) {
+    return Column(
+      children: [
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
+
+              // Retrieve class data and fee information (specifically for Tuition Fee)
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFee = Provider.of<FeeProvider>(context)
+                  .getTuitionFeeByClass(student.classID.toString())
+                  .toString();  // Getting the Tuition Fee instead of Sports Fee
+
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation (optional)
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(
+                        flex: 2,
+                        child: Text("${student.firstName} ${student.lastName}"),
+                      ),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFee)),
+                      SizedBox(width: 30),
+
+                      // Generate Fee Button (For Tuition Fee)
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details for Tuition Fee
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Admission Fee",  // Fee type is set as "Tuition Fee"
+                            feeAmount: double.parse(classFee),  // Store the tuition fee amount
+                            paymentStatus: "Generated",  // Set the payment status as "Generated"
+                            paymentDate: DateTime.now(), year: selectedYear,month: selectedMonth  // Store the current date as payment date
+                          );
+
+                          // Show a snack bar to notify the fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating Admission fee for ${student.firstName}"),
+                          ));
+
+                          // Trigger UI update to show the print receipt button
+                          setState(() {});
+                        },
+                        child: Text("Generate Admission Fee"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Print Button (only shows after fee is generated and feeType is "Tuition Fee")
+                      if (studentReceipts.containsKey(student.studentId.toString()) &&
+                          studentReceipts[student.studentId.toString()]!.feeType == "Admission Fee")
+                        ElevatedButton(
+                          onPressed: () {
+                            _printReceipt(studentReceipts[student.studentId.toString()]!); // Print the tuition fee receipt
+                          },
+                          child: Text("Print Admission Fee Receipt"),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Lab Fee")));
+            },
+            child: Text("Generate All Fees for Lab Fee"),
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  // Transport Fee Tab
+  Widget _buildTransportFeeTab(List<StudentModel> filteredStudents,List<String> years,List<String> months, String selectedMonth, String selectedYear) {
+    return Column(
+      children: [
+        // Month and Year Dropdowns at the top
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Month Dropdown
+              DropdownButton<String>(
+                value: selectedMonth,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedMonth = newValue!;
+                  });
+                },
+                items: months.map<DropdownMenuItem<String>>((String month) {
+                  return DropdownMenuItem<String>(
+                    value: month,
+                    child: Text(month),
+                  );
+                }).toList(),
+              ),
+              SizedBox(width: 20),
+
+              // Year Dropdown
+              DropdownButton<String>(
+                value: selectedYear,
+                onChanged: (String? newValue) {
+                  setState(() {
+                    selectedYear = newValue!;
+                  });
+                },
+                items: years.map<DropdownMenuItem<String>>((String year) {
+                  return DropdownMenuItem<String>(
+                    value: year,
+                    child: Text(year),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
+
+              // Retrieve class data and fee information (specifically for Transport Fee)
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFee = Provider.of<FeeProvider>(context)
+                  .getTransportFeeByClass(student.classID.toString())
+                  .toString();  // Getting the Transport Fee instead of Tuition Fee
+
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation (optional)
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(
+                        flex: 2,
+                        child: Text("${student.firstName} ${student.lastName}"),
+                      ),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFee)),
+                      SizedBox(width: 30),
+
+                      // Generate Fee Button (For Transport Fee)
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details for Transport Fee
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Transport Fee",  // Fee type is set as "Transport Fee"
+                            feeAmount: double.parse(classFee),  // Store the transport fee amount
+                            paymentStatus: "Generated",  // Set the payment status as "Generated"
+                            paymentDate: DateTime.now(),  // Store the current date as payment date
+                            month: selectedMonth, // Store the selected month
+                            year: selectedYear,  // Store the selected year
+                          );
+
+                          // Show a snack bar to notify the fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating transport fee for ${student.firstName}"),
+                          ));
+
+                          // Trigger UI update to show the print receipt button
+                          setState(() {});
+                        },
+                        child: Text("Generate Transport Fee"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Print Button (only shows after fee is generated and feeType is "Transport Fee")
+                      if (studentReceipts.containsKey(student.studentId.toString()) &&
+                          studentReceipts[student.studentId.toString()]!.feeType == "Transport Fee")
+                        ElevatedButton(
+                          onPressed: () {
+                            _printReceipt(studentReceipts[student.studentId.toString()]!); // Print the transport fee receipt
+                          },
+                          child: Text("Print Transport Fee Receipt"),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Transport Fee")));
+            },
+            child: Text("Generate All Fees for Transport Fee"),
+          ),
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildLabFeeTab(List<StudentModel> filteredStudents,String selectedYear, String selectedMonth) {
+    return Column(
+      children: [
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
+
+              // Retrieve class data and fee information (specifically for Tuition Fee)
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFee = Provider.of<FeeProvider>(context)
+                  .getTuitionFeeByClass(student.classID.toString())
+                  .toString();  // Getting the Tuition Fee instead of Sports Fee
+
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation (optional)
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(
+                        flex: 2,
+                        child: Text("${student.firstName} ${student.lastName}"),
+                      ),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFee)),
+                      SizedBox(width: 30),
+
+                      // Generate Fee Button (For Tuition Fee)
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details for Tuition Fee
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Lab Fee",  // Fee type is set as "Tuition Fee"
+                            feeAmount: double.parse(classFee),  // Store the tuition fee amount
+                            paymentStatus: "Generated",  // Set the payment status as "Generated"
+                            paymentDate: DateTime.now(), year: selectedYear,month: selectedMonth  // Store the current date as payment date
+                          );
+
+                          // Show a snack bar to notify the fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating Transport fee for ${student.firstName}"),
+                          ));
+
+                          // Trigger UI update to show the print receipt button
+                          setState(() {});
+                        },
+                        child: Text("Generate Lab Fee"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Print Button (only shows after fee is generated and feeType is "Tuition Fee")
+                      if (studentReceipts.containsKey(student.studentId.toString()) &&
+                          studentReceipts[student.studentId.toString()]!.feeType == "Lab Fee")
+                        ElevatedButton(
+                          onPressed: () {
+                            _printReceipt(studentReceipts[student.studentId.toString()]!); // Print the tuition fee receipt
+                          },
+                          child: Text("Print Lab Fee Receipt"),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Lab Fee")));
+            },
+            child: Text("Generate All Fees for Lab Fee"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSportsFeeTab(List<StudentModel> filteredStudents,String selectedYear, String selectedMonth) {
+    return Column(
+      children: [
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
+
+              // Retrieve class data and fee information (specifically for Tuition Fee)
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFee = Provider.of<FeeProvider>(context)
+                  .getSportsFeeByClass(student.classID.toString())
+                  .toString();  // Getting the Tuition Fee instead of Sports Fee
+
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation (optional)
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(
+                        flex: 2,
+                        child: Text("${student.firstName} ${student.lastName}"),
+                      ),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFee)),
+                      SizedBox(width: 30),
+
+                      // Generate Fee Button (For Tuition Fee)
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details for Tuition Fee
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Sports Fee",  // Fee type is set as "Tuition Fee"
+                            feeAmount: double.parse(classFee),  // Store the tuition fee amount
+                            paymentStatus: "Generated",  // Set the payment status as "Generated"
+                            paymentDate: DateTime.now(), year: selectedYear,month: selectedMonth,  // Store the current date as payment date
+                          );
+
+                          // Show a snack bar to notify the fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating Sports fee for ${student.firstName}"),
+                          ));
+
+                          // Trigger UI update to show the print receipt button
+                          setState(() {});
+                        },
+                        child: Text("Generate Sports Fee"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Print Button (only shows after fee is generated and feeType is "Tuition Fee")
+                      if (studentReceipts.containsKey(student.studentId.toString()) &&
+                          studentReceipts[student.studentId.toString()]!.feeType == "Sports Fee")
+                        ElevatedButton(
+                          onPressed: () {
+                            _printReceipt(studentReceipts[student.studentId.toString()]!); // Print the tuition fee receipt
+                          },
+                          child: Text("Print Sports Fee Receipt"),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Sports Fee")));
+            },
+            child: Text("Generate All Fees for Sports Fee"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFineTab(List<StudentModel> filteredStudents, String selectedYear, String selectedMonth) {
+    return Column(
+      children: [
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
+
+              // Retrieve class data and fine information
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFine = Provider.of<FeeProvider>(context)
+                  .getFineByClass(student.classID.toString())
+                  .toString();
+
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation (optional)
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(
+                        flex: 2,
+                        child: Text("${student.firstName} ${student.lastName}"),
+                      ),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFine)),
+                      SizedBox(width: 30),
+
+                      // Generate Fee Button
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details for the student in studentReceipts map
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Fine", // Set the fee type as Fine
+                            feeAmount: double.parse(classFine), // Store the class fine
+                            paymentStatus: "Generated", // Set the payment status as Generated
+                            paymentDate: DateTime.now(), year: selectedYear,month: selectedMonth, // Store the current date as the payment date
+                          );
+
+                          // Show a snack bar to notify fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating fine for ${student.firstName}"),
+                          ));
+
+                          // Trigger UI update to show the print receipt button
+                          setState(() {});
+                        },
+                        child: Text("Generate Fine"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Print Receipt Button (only shows after the fine is generated and feeType is "Fine")
+                      if (studentReceipts.containsKey(student.studentId.toString()) &&
+                          studentReceipts[student.studentId.toString()]!.feeType == "Fine")
+                        ElevatedButton(
+                          onPressed: () {
+                            _printReceipt(studentReceipts[student.studentId.toString()]!);
+                          },
+                          child: Text("Print Fine Receipt"),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Fine")));
+            },
+            child: Text("Generate All Fees for Fine"),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOtherFeeTab(List<StudentModel> filteredStudents, String selectedYear, String selectedMonth) {
+    return Column(
+      children: [
+        // List of filtered students based on selected fee type
+        Expanded(
+          child: ListView.builder(
+            itemCount: filteredStudents.length,
+            itemBuilder: (context, index) {
+              final student = filteredStudents[index];
+
+              // Retrieve class data and fee information
+              ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context)
+                  .getClassByID(student.classID.toString());
+              String classFee = Provider.of<FeeProvider>(context)
+                  .getOtherFeeByClass(student.classID.toString())
+                  .toString();
+
+              return GestureDetector(
+                onTap: () {
+                  // Handle individual fee generation if needed
+                },
+                child: Card(
+                  elevation: 4,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(width: 30),
+                      Expanded(flex: 1, child: Text(student.studentId.toString())),
+                      SizedBox(width: 30),
+                      Expanded(flex: 2, child: Text("${student.firstName} ${student.lastName}")),
+                      Expanded(flex: 1, child: Text(studentClass?.className.toString() ?? "")),
+                      Expanded(flex: 1, child: Text(classFee)),
+                      SizedBox(width: 30),
+
+                      // Generate Fee Button
+                      ElevatedButton(
+                        onPressed: () {
+                          // Store the receipt details
+                          studentReceipts[student.studentId.toString()] = Receipt(
+                            studentName: "${student.firstName} ${student.lastName}",
+                            studentId: student.studentId.toString(),
+                            className: studentClass?.className ?? '',
+                            feeType: "Other", // You may change this based on the type
+                            feeAmount: double.parse(classFee),
+                            paymentStatus: "Generated",
+                            paymentDate: DateTime.now(), year: selectedYear,month: selectedMonth,
+                          );
+
+                          // Show a snack bar for fee generation
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text("Generating fee for ${student.firstName}"),
+                          ));
+                          setState(() {}); // Trigger UI update to show the receipt button
+                        },
+                        child: Text("Generate Fee"),
+                      ),
+                      SizedBox(width: 30),
+
+                      // Display the "Print Receipt" button if the fee has been generated
+                      if (studentReceipts.containsKey(student.studentId.toString()))
+                        if (studentReceipts[student.studentId.toString()]!.feeType == "Other")
+                          ElevatedButton(
+                            onPressed: () {
+                              _printReceipt(studentReceipts[student.studentId.toString()]!);
+                            },
+                            child: Text("Print Other Fee Receipt"),
+                          )
+                        else if (studentReceipts[student.studentId.toString()]!.feeType == "library")
+                          ElevatedButton(
+                            onPressed: () {
+                              _printReceipt(studentReceipts[student.studentId.toString()]!);
+                            },
+                            child: Text("Print Library Receipt"),
+                          )
+                        else
+                          Container(), // Or any fallback widget for other cases
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        // Button to generate all fees for the current fee type
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Generating all fees for Other")));
+            },
+            child: Text("Generate All Fees for Other"),
+          ),
+        ),
+      ],
+    );
+  }
+
 
   List<String> _getClassNames(List<StudentModel> students) {
     return students
@@ -374,90 +922,38 @@ class _GenerateFeeScreenState extends State<GenerateFeeScreen> with TickerProvid
         .toList();
   }
 
-  // List<StudentModel> _filterStudents(List<StudentModel> students) {
-  //   return students.where((student) {
-  //     // Filter by class
-  //     if (selectedClass != null && selectedClass!.isNotEmpty) {
-  //       ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context, listen: false)
-  //           .getClassByID(student.classID.toString());
-  //       if (studentClass?.className != selectedClass) {
-  //         return false;
-  //       }
-  //     }
-  //
-  //     // Filter by search query (name or student ID)
-  //     if (searchQuery.isNotEmpty) {
-  //       String studentName = "${student.firstName} ${student.lastName}".toLowerCase();
-  //       if (!studentName.contains(searchQuery.toLowerCase()) &&
-  //           !student.studentId.toString().contains(searchQuery)) {
-  //         return false;
-  //       }
-  //     }
-  //
-  //     return true;
-  //   }).toList();
-  // }
+  List<StudentModel> _filterStudents(List<StudentModel> students) {
+    return students.where((student) {
+      // Filter by class
+      if (selectedClass != null && selectedClass!.isNotEmpty) {
+        ClassNameModel? studentClass = Provider.of<ClassNameProvider>(context, listen: false)
+            .getClassByID(student.classID.toString());
+        if (studentClass?.className != selectedClass) {
+          return false;
+        }
+      }
 
-  // void showFeeDialog(String studentName) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       final feeProvider = Provider.of<FeeProvider>(context, listen: false);
-  //       return SizedBox(
-  //         height: 600,
-  //         width: 500,
-  //         child: AlertDialog(
-  //           title: Text("Fee Generation for $studentName"),
-  //           content: Column(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               TextFormField(
-  //                 decoration: InputDecoration(labelText: "Fee Details"),
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.all(8.0),
-  //                 child: Card(
-  //                   elevation: 3,
-  //                   shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(12),
-  //                   ),
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.all(12.0),
-  //                     child: DropdownButtonFormField<String>(
-  //                       decoration: InputDecoration(
-  //                         labelText: "Fee Type",
-  //                         border: OutlineInputBorder(),
-  //                       ),
-  //                       value: feeProvider.selectedFeeType,
-  //                       items: const [
-  //                         DropdownMenuItem(value: "Not Specified", child: Text("Not Specified")),
-  //                         DropdownMenuItem(value: "Admission Fee", child: Text("Admission Fee")),
-  //                         DropdownMenuItem(value: "Tuition Fee", child: Text("Tuition Fee")),
-  //                         DropdownMenuItem(value: "Lab Fee", child: Text("Lab Fee")),
-  //                         DropdownMenuItem(value: "Sports Fee", child: Text("Sports Fee")),
-  //                         DropdownMenuItem(value: "Transport Fee", child: Text("Transport Fee")),
-  //                         DropdownMenuItem(value: "Fine", child: Text("Fine")),
-  //                         DropdownMenuItem(value: "Other", child: Text("Other")),
-  //                       ],
-  //                       onChanged: (value) {
-  //                         feeProvider.changeSelectedFeeType(value!);
-  //                       },
-  //                       validator: (value) {
-  //                         if (value == 'Not Specified' || value == null || value.isEmpty) {
-  //                           return 'Please select a Fee Type';
-  //                         }
-  //                         return null;
-  //                       },
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //               ElevatedButton(onPressed: () {}, child: Text("Create Fee"))
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+      // Filter by search query (name or student ID)
+      if (searchQuery.isNotEmpty) {
+        String studentName = "${student.firstName} ${student.lastName}".toLowerCase();
+        if (!studentName.contains(searchQuery.toLowerCase()) &&
+            !student.studentId.toString().contains(searchQuery)) {
+          return false;
+        }
+      }
+
+      return true;
+    }).toList();
+  }
+
+  void _printReceipt(Receipt receipt) {
+    // Here you can implement your print logic (PDF, file, etc.)
+    print("Receipt for ${receipt.studentName}");
+    print("Student ID: ${receipt.studentId}");
+    print("Class: ${receipt.className}");
+    print("Fee Type: ${receipt.feeType}");
+    print("Fee Amount: ${receipt.feeAmount}");
+    print("Payment Status: ${receipt.paymentStatus}");
+    print("Payment Date: ${receipt.paymentDate}");
+  }
 }

@@ -14,8 +14,8 @@ import 'package:school/ui/presentation/parents/add_parent.dart';
 import 'package:school/ui/presentation/parents/parents_screen.dart';
 import 'package:school/ui/presentation/salaryScreens/generate_salary-screen.dart';
 import 'package:school/ui/presentation/salaryScreens/payslip_screeen.dart';
-import 'package:school/ui/presentation/salaryScreens/salary_dashboard_screen.dart';
-import 'package:school/ui/presentation/salaryScreens/salary_history_screen.dart';
+import 'package:school/ui/presentation/salaryScreens/salary_payment_screen.dart';
+import 'package:school/ui/presentation/salaryScreens/salary_tiers.dart';
 import 'package:school/ui/presentation/salaryScreens/salary_report_screen.dart';
 import 'package:school/ui/presentation/staffScreens/add_edit_staff_screen.dart';
 import 'package:school/ui/presentation/staffScreens/staff_attendance_report_screen.dart';
@@ -27,6 +27,7 @@ import 'package:school/ui/presentation/teachers_screens/add_teacher_screen.dart'
 import 'package:school/ui/presentation/teachers_screens/manage_teacher_screen.dart';
 import 'package:school/ui/presentation/timeTableScreens/timetable_creation_screen.dart';
 import 'package:school/ui/presentation/timeTableScreens/timetable_preview_screen.dart';
+import 'package:school/ui/presentation/transportScreens/routes_screen.dart';
 import 'package:school/ui/presentation/widgets/side_bar.dart';
 import 'accounts/report_screen.dart';
 import 'attendenceScreens/attendance_reports.dart';
@@ -91,9 +92,6 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
 
 
-
-      case 3: // Teachers Section
-        return const FeePaymentScreen();
       case 4: // View Classes
         return const AddTeacherScreen();
       case 5: // Reports
@@ -148,6 +146,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
         return  AddExpenseScreen();
       case 29: // About
         return  ExpenseCategoriesScreen();
+      case 30:
+        return RoutesScreen();
       case 32: // About
         return  SellScreen();
       case 33: // About
@@ -162,17 +162,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
       case 40: // About
         return  TakeStaffAttendanceScreen();
       case 41: // About
-        return  StaffAttendanceReportScreen();
+        return  SalaryPaymentScreen();
       case 42: // About
-        return  GenerateSalaryScreen();
-      case 43: // About
-        return  SalaryReportScreen();
+        return  SalaryGenerationScreen();
+      // case 43: // About
+      //   return  SalaryReportScreen();
       case 44: // About
-        return  PayslipScreen(     employeeId: "1",
-          employeeName: "John Doe",
-        );
-      // case 45: // About
-      //   return  RevenueExpenseScreen();
+        return  SalaryReportScreen();
+      case 45: // About
+        return  SalaryTierScreen();
       // case 46: // About
       //   return  ReportScreen(transactions: [],);
       case 47: // About

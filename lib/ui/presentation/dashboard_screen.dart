@@ -21,7 +21,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
-  bool showData= false;
+  bool showData = false;
 
   // Function to update selected index
   void _onItemTapped(int index) {
@@ -36,9 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: buildAppbar('Dashboard'),
       body: Row(
         children: [
-          // Sidebar on the left side
-
-          // Main content area (Dashboard)
+          // Sidebar on the left side (collapsible for mobile)
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -50,10 +48,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-
   // Method to return the selected screen
   Widget _getSelectedScreen() {
-    final studentProvider= Provider.of<StudentProvider>(context);
+    final studentProvider = Provider.of<StudentProvider>(context);
     switch (_selectedIndex) {
       case 0:
         return _dashboardContent(studentProvider);
@@ -64,58 +61,65 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   // Dashboard Content
   Widget _dashboardContent(StudentProvider studentProvider) {
-
     final teacherProvider = Provider.of<TeacherProvider>(context);
     final classProvider = Provider.of<ClassNameProvider>(context);
 
-
-
-    List<StudentModel> students= studentProvider.mockStudentList;
-    List<ClassNameModel> classes= classProvider.mockClassList;
+    List<StudentModel> students = studentProvider.mockStudentList;
+    List<ClassNameModel> classes = classProvider.mockClassList;
     List<TeacherModel> teachers = teacherProvider.mockTeacherList;
 
     return SingleChildScrollView(
       child: Column(
         children: [
-          Row(mainAxisAlignment: MainAxisAlignment.end,
+          // Section: Toggle visibility for sensitive data
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              IconButton(onPressed: (){
-                setState(() {
-                  showData=!showData;
-
-                });
-
-              }, icon: Icon(FontAwesomeIcons.solidEye)),
-              SizedBox(width: 40,)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    showData = !showData;
+                  });
+                },
+                icon: Icon(FontAwesomeIcons.solidEye),
+              ),
             ],
           ),
-          // Row with Summary Stats
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Column(children: [      _dashboardCard('Students',showData?"***": students.length.toString(), Icons.school),
-
-                _dashboardCard('Teachers',showData?"***": teachers.length.toString(), Icons.person),
-               ],),
-              Column(
-                children: [
-                  _dashboardCard('Classes',showData?"***": classes.length.toString(), Icons.class_),
-                  _dashboardCard('Exams', '10', Icons.assignment),
-                ],
-              ),
-              Column(children: [
-                _dashboardCard('Events', '5', Icons.event),
-                _dashboardCard('Assignments', '200', Icons.assignment_ind),
-              ],),
-
-           Column(
-             children: [
-
-               _dashboardCard('Departments', '8', Icons.business),
-               _dashboardCard('Attendance', '95%', Icons.check_circle),
-             ],
-           )
-            ],
+          // Row with Summary Stats (Grid layout for responsiveness)
+          GridView.builder(
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 1.2,
+            ),
+            itemCount: 8,
+            itemBuilder: (context, index) {
+              return _dashboardCard(
+                ['Students', 'Teachers', 'Classes', 'Exams', 'Events', 'Assignments', 'Departments', 'Attendance'][index],
+                showData ? "***" : [
+                  students.length.toString(),
+                  teachers.length.toString(),
+                  classes.length.toString(),
+                  '10', // Exam count can be dynamic
+                  '5', // Event count can be dynamic
+                  '200', // Assignment count can be dynamic
+                  '8', // Department count can be dynamic
+                  '95%' // Attendance percentage can be dynamic
+                ][index],
+                [
+                  Icons.school,
+                  Icons.person,
+                  Icons.class_,
+                  Icons.assignment,
+                  Icons.event,
+                  Icons.assignment_ind,
+                  Icons.business,
+                  Icons.check_circle
+                ][index],
+              );
+            },
           ),
           const SizedBox(height: 20),
 
@@ -159,26 +163,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Function for a summary card with a title, number, and icon
-
+  // Dashboard Card with gradient and icon
   Widget _dashboardCard(String title, String value, IconData icon) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 18.0),
+      padding: const EdgeInsets.symmetric(vertical: 18.0,horizontal: 15),
       child: Container(
-        height: MediaQuery.of(context).size.height*0.24,
-        width: MediaQuery.of(context).size.width*0.11,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.purpleAccent, Colors.deepPurple], // Gradient background
+            colors: [Colors.blueAccent, Colors.blue], // Gradient background
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(20), // Rounded corners
+          borderRadius: BorderRadius.circular(16), // Rounded corners
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.15),
-              blurRadius: 12,
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
               spreadRadius: 4,
             ),
           ],
@@ -189,13 +190,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1), // Slightly transparent background for icon
+                color: Colors.white.withOpacity(0.1),
                 shape: BoxShape.circle, // Circular container for the icon
               ),
               child: FaIcon(
-                icon, // Font Awesome icon used here
+                icon,
                 color: Colors.white,
-                size: MediaQuery.of(context).size.width*0.024,
+                size: 30,
               ),
             ),
             const SizedBox(height: 12),
@@ -204,8 +205,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 26,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 1.1,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 6),
@@ -214,7 +214,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               style: TextStyle(
                 color: Colors.white70,
                 fontSize: 14,
-                fontWeight: FontWeight.w500,
               ),
             ),
           ],
@@ -223,62 +222,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Pie Chart (Performance Stats, e.g., students passing/failing)
+  // Pie Chart for performance stats
   Widget _pieChart() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          width: 160,
-          height: 160,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(value: 7.7, color: Colors.green, title: 'Pass'),
-                PieChartSectionData(value: 02.3, color: Colors.red, title: 'Fail'),
-              ],
-            ),
-          ),
+    return SizedBox(
+      width: 160,
+      height: 160,
+      child: PieChart(
+        PieChartData(
+          sections: [
+            PieChartSectionData(value: 7.7, color: Colors.green, title: 'Pass'),
+            PieChartSectionData(value: 2.3, color: Colors.red, title: 'Fail'),
+          ],
         ),
-
-        SizedBox(width: 35,),
-        SizedBox(
-          width: 160,
-          height: 160,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(value: 2.7, color: Colors.green, title: 'Done'),
-                PieChartSectionData(value: 7.3, color: Colors.red, title: 'Remaining'),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(width: 35,),
-        SizedBox(
-          width: 160,
-          height: 160,
-          child: PieChart(
-            PieChartData(
-              sections: [
-                PieChartSectionData(value: 5.7, color: Colors.blue, title: 'Paid'),
-                PieChartSectionData(value: 4.3, color: Colors.yellowAccent, title: 'Unpaid'),
-              ],
-            ),
-          ),
-        ),
-
-
-      ],
+      ),
     );
   }
 
-  // Bar Chart (e.g., Attendance or Test Scores)
+  // Bar Chart for attendance or test scores
   Widget _barChart() {
-    return Container(
+    return SizedBox(
       width: 160,
       height: 160,
       child: BarChart(
-
         BarChartData(
           borderData: FlBorderData(show: true),
           titlesData: FlTitlesData(show: true),
@@ -293,7 +258,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Recent Activities List (e.g., recent students enrolled, reports generated)
+  // Recent Activities List
   Widget _recentActivities() {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -314,7 +279,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Individual Activity Tile (For Recent Activities)
+  // Individual Activity Tile
   Widget _activityTile(String title, IconData icon) {
     return ListTile(
       leading: Icon(icon, color: Colors.blueAccent),
@@ -322,7 +287,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Circular Progress Indicator (e.g., Progress of an activity)
+  // Circular Progress Indicator
   Widget _progressIndicator(String title, double progress) {
     return Column(
       children: [
@@ -338,7 +303,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Notification Tile (e.g., Important updates or reminders)
+  // Notification Tile
   Widget _notificationTile(String title, IconData icon) {
     return Card(
       elevation: 2,
@@ -352,7 +317,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Data Table (Display a list of students or teachers)
+  // Data Table for Students or Teachers
   Widget _dataTable() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -381,7 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // Loading Indicator (For when data is being fetched)
+  // Loading Indicator
   Widget _loadingIndicator() {
     return Center(
       child: SpinKitCircle(
@@ -391,5 +356,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-
-

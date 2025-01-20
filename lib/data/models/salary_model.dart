@@ -9,8 +9,11 @@ class Salary {
   String month;
   String year;
   DateTime generatedAt;
+  bool isPaid;
 
-  Salary({
+
+
+  Salary({this.isPaid=false,
     required this.id,
     required this.employeeId,
     required this.employeeName,

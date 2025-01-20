@@ -247,16 +247,6 @@ class StudentProvider extends ChangeNotifier {
     ),
   ];
 
-
-
-  // giveAdmissionFeeConcession(double admissionConcession){
-  //   _admissionFeeConcession=admissionConcession;
-  //   notifyListeners();
-  // }
-  // giveTuitionFeeConcession(double tuitionFee){
-  //   _tuitionFeeConcession=tuitionFee;
-  //   notifyListeners();
-  // }
   double subtractPercentageTuitionFee(double originalValue, {double percentage=0.0}) {
     // Calculate the percentage deduction
     double deduction = originalValue * (percentage / 100);

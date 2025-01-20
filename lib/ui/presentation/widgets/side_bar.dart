@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';  // Importing FontAwesome Flutter
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Sidebar extends StatefulWidget {
   final Function(int) onItemTapped;
@@ -16,16 +16,16 @@ class _SidebarState extends State<Sidebar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 260,
+      width: 270,
       decoration: BoxDecoration(
-        color: Color(0xFF2C2C2C),
-        borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
+        color: Color(0xFF232F3E),  // Darker background
+        borderRadius: BorderRadius.horizontal(right: Radius.circular(30)),
       ),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           _buildHeader(),
-          Divider(color: Colors.grey[700]),
+          Divider(color: Colors.grey[600], thickness: 0.5),
 
           // Dashboard
           _buildListItem(
@@ -42,7 +42,6 @@ class _SidebarState extends State<Sidebar> {
             children: [
               _buildListItem(title: 'Add Student', icon: FontAwesomeIcons.userPlus, index: 1),
               _buildListItem(title: 'View Students', icon: FontAwesomeIcons.users, index: 2),
-              _buildListItem(title: 'Pay Fee', icon: FontAwesomeIcons.moneyBillWave, index: 3),
             ],
           ),
 
@@ -52,7 +51,7 @@ class _SidebarState extends State<Sidebar> {
             icon: FontAwesomeIcons.chalkboardTeacher,
             index: 2,
             children: [
-              _buildListItem(title: 'Add Teachers', icon: FontAwesomeIcons.userPlus, index: 4),
+              _buildListItem(title: 'Add Teacher', icon: FontAwesomeIcons.userPlus, index: 4),
               _buildListItem(title: 'Manage Teachers', icon: FontAwesomeIcons.userEdit, index: 5),
             ],
           ),
@@ -63,8 +62,8 @@ class _SidebarState extends State<Sidebar> {
             icon: FontAwesomeIcons.bookOpen,
             index: 3,
             children: [
-              _buildListItem(title: 'Manage Subjects', icon: FontAwesomeIcons.circlePlus, index: 6),
-              _buildListItem(title: 'Manage Classes', icon: FontAwesomeIcons.rectangleList, index: 7),
+              _buildListItem(title: 'Manage Subjects', icon: FontAwesomeIcons.book, index: 6),
+              _buildListItem(title: 'Manage Classes', icon: FontAwesomeIcons.users, index: 7),
             ],
           ),
 
@@ -78,7 +77,6 @@ class _SidebarState extends State<Sidebar> {
               _buildListItem(title: 'View Parent Accounts', icon: FontAwesomeIcons.users, index: 9),
             ],
           ),
-
 
           // Fee Management Section
           _buildExpandableTile(
@@ -121,12 +119,6 @@ class _SidebarState extends State<Sidebar> {
             index: 9,
             children: [
               _buildListItem(title: 'Under Development', icon: FontAwesomeIcons.underline, index: 21),
-
-              // _buildListItem(title: 'Exam Registration', icon: FontAwesomeIcons.pen, index: 21),
-              // _buildListItem(title: 'Marks Entry Screen', icon: Icons.transit_enterexit, index: 22),
-              // _buildListItem(title: 'Exam Screen', icon: FontAwesomeIcons.chalkboard, index: 23),
-              // _buildListItem(title: 'Exam Results Screen', icon: FontAwesomeIcons.squarePollVertical, index: 24),
-              // _buildListItem(title: 'Exam Scheduling Screen', icon: FontAwesomeIcons.calendar, index: 25),
             ],
           ),
 
@@ -141,12 +133,21 @@ class _SidebarState extends State<Sidebar> {
               _buildListItem(title: 'Expense Categories', icon: FontAwesomeIcons.coins, index: 29),
             ],
           ),
+          _buildExpandableTile(
+            title: 'Transport',
+            icon: FontAwesomeIcons.bus,
+            index: 11,
+            children: [
+              _buildListItem(title: 'Transport Routes', icon: FontAwesomeIcons.route, index: 30),
+              // _buildListItem(title: 'Reports', icon: FontAwesomeIcons.chartPie, index: 47),
+            ],
+          ),
 
           // Canteen Section
           _buildExpandableTile(
             title: 'Canteen',
             icon: FontAwesomeIcons.utensils,
-            index: 11,
+            index: 12,
             children: [
               _buildListItem(title: 'Selling Screen', icon: FontAwesomeIcons.store, index: 32),
               _buildListItem(title: 'Products List', icon: FontAwesomeIcons.list, index: 33),
@@ -159,12 +160,11 @@ class _SidebarState extends State<Sidebar> {
           _buildExpandableTile(
             title: 'Staff',
             icon: FontAwesomeIcons.userTie,
-            index: 12,
+            index: 13,
             children: [
               _buildListItem(title: 'Staff Screen', icon: FontAwesomeIcons.users, index: 38),
               _buildListItem(title: 'Take Staff Attendance', icon: FontAwesomeIcons.userCog, index: 40),
               _buildListItem(title: 'Staff Attendance Report', icon: FontAwesomeIcons.userCog, index: 41),
-
             ],
           ),
 
@@ -172,13 +172,12 @@ class _SidebarState extends State<Sidebar> {
           _buildExpandableTile(
             title: 'Salaries',
             icon: FontAwesomeIcons.moneyCheckAlt,
-            index: 13,
+            index: 14,
             children: [
-              _buildListItem(title: 'Dashboard', icon: FontAwesomeIcons.moneyBill, index: 41),
-              _buildListItem(title: 'Report Screen', icon: FontAwesomeIcons.chartBar, index: 42),
-              _buildListItem(title: 'Generate Salaries', icon: FontAwesomeIcons.history, index: 43),
+              _buildListItem(title: 'Salary payment Screen', icon: FontAwesomeIcons.moneyBill, index: 41),
+              _buildListItem(title: 'Generate Salaries', icon: FontAwesomeIcons.chartBar, index: 42),
               _buildListItem(title: 'Salary Reports', icon: FontAwesomeIcons.fileInvoice, index: 44),
-              _buildListItem(title: 'Salary Payslips', icon: FontAwesomeIcons.print, index: 45),
+              _buildListItem(title: 'Salary Tiers', icon: FontAwesomeIcons.print, index: 45),
             ],
           ),
 
@@ -186,7 +185,7 @@ class _SidebarState extends State<Sidebar> {
           _buildExpandableTile(
             title: 'Accounts',
             icon: FontAwesomeIcons.book,
-            index: 14,
+            index: 15,
             children: [
               _buildListItem(title: 'Revenue Expense Screen', icon: FontAwesomeIcons.cashRegister, index: 46),
               _buildListItem(title: 'Reports', icon: FontAwesomeIcons.chartPie, index: 47),
@@ -213,13 +212,16 @@ class _SidebarState extends State<Sidebar> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      child: Text(
-        'Services Public School and College',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      child: ListTile(
+        title: Text(
+          'Services Public School and College',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+          ),
         ),
       ),
     );
@@ -235,7 +237,7 @@ class _SidebarState extends State<Sidebar> {
       leading: Icon(icon, color: Colors.white),
       title: Text(
         title,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white, fontSize: 16),
       ),
       onTap: () => widget.onItemTapped(index),
     );
@@ -247,19 +249,47 @@ class _SidebarState extends State<Sidebar> {
     required int index,
     required List<Widget> children,
   }) {
-    return ExpansionTile(
-      collapsedIconColor: Colors.white,
-      leading: Icon(icon, color: Colors.white),
-      title: Text(title, style: TextStyle(color: Colors.white)),
-      onExpansionChanged: (expanded) {
+    return GestureDetector(
+      onTap: () {
         setState(() {
-          _expandedIndex = expanded ? index : null;
+          // If the current tile is already expanded, collapse it
+          if (_expandedIndex == index) {
+            _expandedIndex = null;
+          } else {
+            // Otherwise, expand this tile and collapse the others
+            _expandedIndex = index;
+          }
         });
       },
-      backgroundColor: Colors.grey.shade800,
-      childrenPadding: EdgeInsets.only(left: 40),
-      iconColor: Colors.white,
-      children: _expandedIndex == index ? children : [],
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        padding: EdgeInsets.only(left: 10),
+        decoration: BoxDecoration(
+          color: _expandedIndex == index ? Colors.blueGrey.shade800 : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.symmetric(horizontal: 20),
+              leading: Icon(icon, color: Colors.white),
+              title: Text(title, style: TextStyle(color: Colors.white, fontSize: 16)),
+              trailing: Icon(size: 15,
+                _expandedIndex == index
+                    ? FontAwesomeIcons.chevronUp
+                    : FontAwesomeIcons.chevronDown,
+                color: Colors.white,
+              ),
+            ),
+            if (_expandedIndex == index)
+              AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                padding: EdgeInsets.only(left: 40, top: 8),
+                child: Column(children: children),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

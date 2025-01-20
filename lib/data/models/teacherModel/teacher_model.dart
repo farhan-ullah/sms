@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:school/data/models/salary_model.dart';
 
 
  class TeacherModel {
@@ -22,9 +23,12 @@ import 'package:hive/hive.dart';
 
    String? salaryTier;
 
+   Map<String, Salary>? salaries;
+
    String? teacherNic;
 
   TeacherModel({
+    this.salaries,
     this.teacherNic="",
     this.dateOfJoining="",
     this.qualification="",

@@ -44,11 +44,14 @@ class StudentModel {
 
   double? concessionInPKR;
 
+  String? routeID;
+
   StudentModel({
+    this.routeID,
     this.concessionInPercent,
     this.concessionInPKR,
     this.parentId,
-    required this.firstName,
+    this.firstName,
     this.studentAllFeeTypes,
     this.lastName = "",
     this.classID = "",

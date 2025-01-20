@@ -235,6 +235,7 @@ double? discountedTuitionFee;
                     ),
                   ),
                   const SizedBox(width: 10),
+
                 ],
               ),
               CustomTextfield(
@@ -260,7 +261,7 @@ double? discountedTuitionFee;
                         children: [
                           const Text("Parents already added?"),
                           Switch(
-                            value: studentProvider.parentOption,
+                            value: !studentProvider.parentOption,
                             onChanged: (value) {
                               studentProvider.changeParentSetting();
                             },
@@ -270,7 +271,7 @@ double? discountedTuitionFee;
                     },
                   ),
                   studentProvider.parentOption
-                      ? SizedBox() // When parent is added, nothing here
+                      ? SizedBox()
                       : Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
@@ -362,28 +363,14 @@ double? discountedTuitionFee;
                       ),
                       const SizedBox(width: 10),
                       Expanded(
-                        child: CustomTextfield(
-                          labelText: 'Replace',
-                          controller: rollNoController,
-                        ),
-                      ),
+                        child:  CustomTextfield(
+                          labelText: 'Home and Street Address',
+                          controller: addressController,
+                        ),                      ),
                     ],
                   )
                   : SizedBox(),
-              const SizedBox(height: 10),
-              parentToBeAdded
-                  ? Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextfield(
-                          labelText: 'Other Phone No',
-                          controller: otherNoController,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                    ],
-                  )
-                  : SizedBox(),
+
               const Divider(),
               const SizedBox(height: 20),
 
@@ -597,7 +584,6 @@ double? discountedTuitionFee;
                         placeOfBirth: placeOfBrithController.text,
                         dateOfBirth: dobController.text,
                         reasonOfLeaving: reasonOfLeavingController.text,
-                        completeAddress: addressController.text,
                         emergencyContactNo: emergencyContactController.text,
                         reference: referenceController.text,
                         rollNo: rollNoController.text,
@@ -620,6 +606,7 @@ double? discountedTuitionFee;
                         phoneNumber: parentPhoneController.text,
                         email: fatherEmailController.text,
                         nic: parentNICController.text,
+                        completeAddress: addressController.text
                       );
 
                       try {

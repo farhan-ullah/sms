@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/models/transaction_model.dart';
+import '../../data/models/transactionModel/transaction_model.dart';
 
 class AccountingProvider extends ChangeNotifier {
   // List to keep track of all the transactions

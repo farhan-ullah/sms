@@ -4,6 +4,8 @@ import '../../../businessLogic/providers/staff_provider.dart';
 import '../../../data/models/staff_model.dart';
 
 class StaffListScreen extends StatelessWidget {
+  const StaffListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     var staffProvider = Provider.of<StaffProvider>(context);
@@ -35,7 +37,7 @@ class StaffListScreen extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
               onChanged: (text) {
-                // Implement search functionality
+                // Implement search functionality if needed
               },
             ),
             SizedBox(height: 16),
@@ -53,7 +55,7 @@ class StaffListScreen extends StatelessWidget {
                         IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
-                            // Implement edit functionality if necessary
+                            // Implement edit functionality if needed
                           },
                         ),
                         IconButton(
@@ -327,7 +329,7 @@ class StaffListScreen extends StatelessWidget {
                     role: role,
                     contactNumber: contactNumber,
                     email: email,
-                    salary: salary,
+                    salaryTier: salary,
                     department: department,
                     status: status,
                     hireDate: hireDate,

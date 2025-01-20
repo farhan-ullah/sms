@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../businessLogic/providers/accounting_provider.dart';
 import '../../../businessLogic/providers/inventory_provider.dart';
-import '../../../data/models/transaction_model.dart';
+import '../../../data/models/transactionModel/transaction_model.dart';
 import '../../../data/models/canteen/product_model.dart';
 
 class SalesReportScreen extends StatefulWidget {

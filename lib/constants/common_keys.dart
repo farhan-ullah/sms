@@ -36,6 +36,7 @@ class CommonKeys {
   static const String FEE_ID_KEY='fee';
   static const String PARENT_ID_KEY ='parent';
   static const String SUBJECT_ID_KEY ='subject';
+  static const String SALARY_ID_KEY ='salary';
 
 
 }

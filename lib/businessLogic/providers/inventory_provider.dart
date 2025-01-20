@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/canteen/product_model.dart';
 import '../../data/models/canteen/stock_management_model.dart';
-import '../../data/models/transaction_model.dart';
+import '../../data/models/transactionModel/transaction_model.dart';
 
 // Inventory Provider
 class InventoryProvider extends ChangeNotifier {
