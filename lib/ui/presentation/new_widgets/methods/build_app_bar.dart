@@ -14,6 +14,7 @@ AppBar buildAppbar(String pageName) {
 
       ],
     ),
-    backgroundColor: Colors.deepPurple,
+    backgroundColor: Color(0xFF556270),
+
   );
 }

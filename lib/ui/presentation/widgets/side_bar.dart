@@ -122,6 +122,7 @@ class _SidebarState extends State<Sidebar> {
             ],
           ),
 
+
           // Expenses Section
           _buildExpandableTile(
             title: 'Expenses',
@@ -129,7 +130,7 @@ class _SidebarState extends State<Sidebar> {
             index: 10,
             children: [
               _buildListItem(title: 'Expense Dashboard', icon: FontAwesomeIcons.chartBar, index: 27),
-              _buildListItem(title: 'Add New Expense', icon: FontAwesomeIcons.plusCircle, index: 28),
+              _buildListItem(title: 'Add New Expense', icon: FontAwesomeIcons.circlePlus, index: 28),
               _buildListItem(title: 'Expense Categories', icon: FontAwesomeIcons.coins, index: 29),
             ],
           ),
@@ -191,7 +192,11 @@ class _SidebarState extends State<Sidebar> {
               _buildListItem(title: 'Reports', icon: FontAwesomeIcons.chartPie, index: 47),
             ],
           ),
-
+          _buildListItem(hasPadding: true,
+            title: 'User Management Screen',
+            icon: FontAwesomeIcons.userGroup,
+            index: 22,
+          ),
           // Settings Section
           _buildListItem(
             title: 'Settings',
@@ -213,31 +218,50 @@ class _SidebarState extends State<Sidebar> {
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      child: ListTile(
-        title: Text(
-          'Services Public School and College',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-          ),
-        ),
+      child: Column(
+        children: [
+          Image(image: AssetImage("assets/images/girls_kingdom.png"),
+            // height:
+            // MediaQuery.of(context).size.height*0.15,
+            width: MediaQuery.of(context).size.width*0.18,),
+          Text("The Girls Kingdom School & College",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 12,letterSpacing: 0.6),)
+        ],
       ),
+      // child: ListTile(
+      //   leading: Image(image: AssetImage("assets/images/girls_kingdom.jpg")),
+      //
+      //
+      //   title: Text(
+      //     'Services Public School and College',
+      //     style: TextStyle(
+      //       color: Colors.white,
+      //       fontSize: 24,
+      //       fontWeight: FontWeight.bold,
+      //       letterSpacing: 1.2,
+      //     ),
+      //   ),
+      // ),
     );
   }
 
   Widget _buildListItem({
+    bool hasPadding=false,
     required String title,
     required IconData icon,
     required int index,
   }) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 20),
-      leading: Icon(icon, color: Colors.white),
-      title: Text(
-        title,
-        style: TextStyle(color: Colors.white, fontSize: 16),
+      leading: Padding(
+        padding:  EdgeInsets.only(left: hasPadding? 8.0:0),
+        child: Icon(icon, color: Colors.white),
+      ),
+      title: Padding(
+        padding:  EdgeInsets.only(left: hasPadding? 8.0:0),
+        child: Text(
+          title,
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
       ),
       onTap: () => widget.onItemTapped(index),
     );

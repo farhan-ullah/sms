@@ -1,44 +1,5 @@
+
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.blueAccent,
-        scaffoldBackgroundColor: Colors.grey[900],
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.blueAccent,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-            textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.blueAccent),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          labelStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          contentPadding: const EdgeInsets.all(16),
-        ),
-      ),
-      home: const UserManagementScreen(),
-    );
-  }
-}
 
 class UserManagementScreen extends StatefulWidget {
   const UserManagementScreen({super.key});
@@ -103,117 +64,7 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Management'),
-        actions: [
-          // Button to show the bottom sheet for adding new users
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              // Show the modal bottom sheet to add a user
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true, // Allow scrollable content
-                backgroundColor: Colors.transparent, // To allow custom decoration
-                builder: (BuildContext context) {
-                  return ClipRRect(
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                    child: Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.all(16.0),
-                      child: SingleChildScrollView(
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Add New User',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
-                              ),
-                              const SizedBox(height: 10),
 
-                              // Name Input
-                              TextFormField(
-                                controller: _nameController,
-                                decoration: const InputDecoration(labelText: 'User Name', icon: Icon(Icons.person)),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter a name';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Email Input
-                              TextFormField(
-                                controller: _emailController,
-                                decoration: const InputDecoration(labelText: 'Email', icon: Icon(Icons.email)),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty || !RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
-                                    return 'Please enter a valid email';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Phone Input
-                              TextFormField(
-                                controller: _phoneController,
-                                decoration: const InputDecoration(labelText: 'Phone Number', icon: Icon(Icons.phone)),
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Department Input
-                              TextFormField(
-                                controller: _departmentController,
-                                decoration: const InputDecoration(labelText: 'Department', icon: Icon(Icons.business)),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter a department';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Role Dropdown
-                              DropdownButtonFormField<String>(
-                                value: _selectedRole,
-                                decoration: const InputDecoration(labelText: 'Role', icon: Icon(Icons.work)),
-                                items: const [
-                                  DropdownMenuItem(value: 'Admin', child: Text('Admin')),
-                                  DropdownMenuItem(value: 'Teacher', child: Text('Teacher')),
-                                  DropdownMenuItem(value: 'Accountant', child: Text('Accountant')),
-                                  DropdownMenuItem(value: 'Student', child: Text('Student')),
-                                ],
-                                onChanged: (value) {
-                                  setState(() {
-                                    _selectedRole = value!;
-                                  });
-                                },
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Add User Button
-                              ElevatedButton(
-                                onPressed: _addUser,
-                                child: const Text('Add User'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -258,6 +109,112 @@ class _UserManagementScreenState extends State<UserManagementScreen> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(    child: Icon(Icons.add),       onPressed: () {
+      // Show the modal bottom sheet to add a user
+      showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Allow scrollable content
+      backgroundColor: Colors.transparent, // To allow custom decoration
+      builder: (BuildContext context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Add New User',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Name Input
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(labelText: 'User Name', icon: Icon(Icons.person)),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Email Input
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(labelText: 'Email', icon: Icon(Icons.email)),
+                      validator: (value) {
+                        if (value == null || value.isEmpty || !RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Phone Input
+                    TextFormField(
+                      controller: _phoneController,
+                      decoration: const InputDecoration(labelText: 'Phone Number', icon: Icon(Icons.phone)),
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Department Input
+                    TextFormField(
+                      controller: _departmentController,
+                      decoration: const InputDecoration(labelText: 'Department', icon: Icon(Icons.business)),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a department';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 10),
+
+                    // Role Dropdown
+                    DropdownButtonFormField<String>(
+                      value: _selectedRole,
+                      decoration: const InputDecoration(labelText: 'Role', icon: Icon(Icons.work)),
+                      items: const [
+                        DropdownMenuItem(value: 'Admin', child: Text('Admin')),
+                        DropdownMenuItem(value: 'Teacher', child: Text('Teacher')),
+                        DropdownMenuItem(value: 'Accountant', child: Text('Accountant')),
+                        DropdownMenuItem(value: 'Student', child: Text('Student')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedRole = value!;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Add User Button
+                    ElevatedButton(
+                      onPressed: _addUser,
+                      child: const Text('Add User'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  },
+    ),
     );
   }
 }

@@ -21,6 +21,7 @@ class _SellScreenState extends State<SellScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.black,
         title: const Text('Sell Products'),
         centerTitle: true,
         backgroundColor: Colors.greenAccent,
@@ -167,6 +168,7 @@ class _SellScreenState extends State<SellScreen> {
         style: TextStyle(fontSize: 16),
       ),
       style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.black,
         backgroundColor: Colors.greenAccent,
         minimumSize: Size(double.infinity, 45),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -212,7 +214,8 @@ class _SellScreenState extends State<SellScreen> {
           debitAmount: totalAmount,
           creditAmount: totalAmount,
           date: DateTime.now(),
-        );
+          category:""
+        , isExpense: true,isRevenue: false);
 
         context.read<AccountingProvider>().recordTransaction(transaction);
       }

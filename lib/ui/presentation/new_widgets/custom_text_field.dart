@@ -76,7 +76,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
               stylusHandwritingEnabled: true,
 
               controller: widget.controller,
-              // focusNode: _focusNode,
+              focusNode: _focusNode,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               autofocus: true,
               style: TextStyle(fontSize: 16, color: Colors.black87),
@@ -85,7 +85,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
               decoration: InputDecoration(
                 hintText: widget.labelText,
                 hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
-                labelText: widget.labelText,
+                // labelText: widget.labelText,
                 labelStyle: TextStyle(
                   color: _isFocused
                       ? Colors.blueAccent

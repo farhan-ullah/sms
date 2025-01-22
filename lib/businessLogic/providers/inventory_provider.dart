@@ -5,172 +5,172 @@ import '../../data/models/transactionModel/transaction_model.dart';
 
 // Inventory Provider
 class InventoryProvider extends ChangeNotifier {
-  List<Transaction> dummySalesData = [
-    // Sale for Food & Beverages
-    Transaction(
-      id: 't1',
-      description: 'Sale of Sandwich',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 3.5 * 5,  // Sale of 5 Sandwiches
-      creditAmount: 3.5 * 5,  // Sale of 5 Sandwiches
-      date: DateTime.now().subtract(Duration(days: 1)),  // Yesterday
-    ),
-
-    // Sale for Stationery
-    Transaction(
-      id: 't2',
-      description: 'Sale of Notebook',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 1.8 * 10,  // Sale of 10 Notebooks
-      creditAmount: 1.8 * 10,  // Sale of 10 Notebooks
-      date: DateTime.now().subtract(Duration(days: 2)),  // 2 Days Ago
-    ),
-
-    // Sale for School Uniforms
-    Transaction(
-      id: 't3',
-      description: 'Sale of School Shirt',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 12.0 * 3,  // Sale of 3 School Shirts
-      creditAmount: 12.0 * 3,  // Sale of 3 School Shirts
-      date: DateTime.now().subtract(Duration(days: 3)),  // 3 Days Ago
-    ),
-
-    // Sale for Tech & Accessories
-    Transaction(
-      id: 't4',
-      description: 'Sale of Wireless Headphones',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 30.0 * 2,  // Sale of 2 Wireless Headphones
-      creditAmount: 30.0 * 2,  // Sale of 2 Wireless Headphones
-      date: DateTime.now().subtract(Duration(days: 5)),  // 5 Days Ago
-    ),
-
-    // Sale for Personal Care & Hygiene
-    Transaction(
-      id: 't5',
-      description: 'Sale of Hand Sanitizer',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 1.5 * 20,  // Sale of 20 Hand Sanitizers
-      creditAmount: 1.5 * 20,  // Sale of 20 Hand Sanitizers
-      date: DateTime.now().subtract(Duration(days: 6)),  // 6 Days Ago
-    ),
-
-    // Sale for Health & Wellness
-    Transaction(
-      id: 't6',
-      description: 'Sale of Hand Sanitizer',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 1.5 * 15,  // Sale of 15 Hand Sanitizers
-      creditAmount: 1.5 * 15,  // Sale of 15 Hand Sanitizers
-      date: DateTime.now().subtract(Duration(days: 7)),  // 7 Days Ago
-    ),
-
-    // Sale for Books & Learning Resources
-    Transaction(
-      id: 't7',
-      description: 'Sale of Notebook',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 1.8 * 25,  // Sale of 25 Notebooks
-      creditAmount: 1.8 * 25,  // Sale of 25 Notebooks
-      date: DateTime.now().subtract(Duration(days: 8)),  // 8 Days Ago
-    ),
-
-    // Sale for Tech & Accessories
-    Transaction(
-      id: 't8',
-      description: 'Sale of Wireless Headphones',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
-      creditAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
-      date: DateTime.now().subtract(Duration(days: 10)), // 10 Days Ago
-    ),
-
-    // Sale for Food & Beverages
-    Transaction(
-      id: 't9',
-      description: 'Sale of Sandwich',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 3.5 * 10,  // Sale of 10 Sandwiches
-      creditAmount: 3.5 * 10,  // Sale of 10 Sandwiches
-      date: DateTime.now().subtract(Duration(days: 12)), // 12 Days Ago
-    ),
-
-    // Sale for Personal Care & Hygiene
-    Transaction(
-      id: 't10',
-      description: 'Sale of Hand Sanitizer',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 1.5 * 50,  // Sale of 50 Hand Sanitizers
-      creditAmount: 1.5 * 50,  // Sale of 50 Hand Sanitizers
-      date: DateTime.now().subtract(Duration(days: 15)), // 15 Days Ago
-    ),
-
-    // Sale for Stationery
-    Transaction(
-      id: 't11',
-      description: 'Sale of Notebook',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 1.8 * 5,   // Sale of 5 Notebooks
-      creditAmount: 1.8 * 5,   // Sale of 5 Notebooks
-      date: DateTime.now().subtract(Duration(days: 18)), // 18 Days Ago
-    ),
-
-    // Sale for School Uniforms
-    Transaction(
-      id: 't12',
-      description: 'Sale of School Shirt',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 12.0 * 7,   // Sale of 7 School Shirts
-      creditAmount: 12.0 * 7,   // Sale of 7 School Shirts
-      date: DateTime.now().subtract(Duration(days: 20)), // 20 Days Ago
-    ),
-
-    // Sale for Food & Beverages
-    Transaction(
-      id: 't13',
-      description: 'Sale of Sandwich',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 3.5 * 8,   // Sale of 8 Sandwiches
-      creditAmount: 3.5 * 8,   // Sale of 8 Sandwiches
-      date: DateTime.now().subtract(Duration(days: 22)), // 22 Days Ago
-    ),
-
-    // Sale for Tech & Accessories
-    Transaction(
-      id: 't14',
-      description: 'Sale of Wireless Headphones',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 30.0 * 3,  // Sale of 3 Wireless Headphones
-      creditAmount: 30.0 * 3,  // Sale of 3 Wireless Headphones
-      date: DateTime.now().subtract(Duration(days: 25)), // 25 Days Ago
-    ),
-
-    // Sale for Tech & Accessories
-    Transaction(
-      id: 't15',
-      description: 'Sale of Wireless Headphones',
-      debitAccount: 'Cash',
-      creditAccount: 'Sales Revenue',
-      debitAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
-      creditAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
-      date: DateTime.now().subtract(Duration(days: 30)), // 30 Days Ago
-    ),
-  ];
+  // List<Transaction> dummySalesData = [
+  //   // Sale for Food & Beverages
+  //   Transaction(
+  //     id: 't1',
+  //     description: 'Sale of Sandwich',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 3.5 * 5,  // Sale of 5 Sandwiches
+  //     creditAmount: 3.5 * 5,  // Sale of 5 Sandwiches
+  //     date: DateTime.now().subtract(Duration(days: 1)),  // Yesterday
+  //   ),
+  //
+  //   // Sale for Stationery
+  //   Transaction(
+  //     id: 't2',
+  //     description: 'Sale of Notebook',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 1.8 * 10,  // Sale of 10 Notebooks
+  //     creditAmount: 1.8 * 10,  // Sale of 10 Notebooks
+  //     date: DateTime.now().subtract(Duration(days: 2)),  // 2 Days Ago
+  //   ),
+  //
+  //   // Sale for School Uniforms
+  //   Transaction(
+  //     id: 't3',
+  //     description: 'Sale of School Shirt',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 12.0 * 3,  // Sale of 3 School Shirts
+  //     creditAmount: 12.0 * 3,  // Sale of 3 School Shirts
+  //     date: DateTime.now().subtract(Duration(days: 3)),  // 3 Days Ago
+  //   ),
+  //
+  //   // Sale for Tech & Accessories
+  //   Transaction(
+  //     id: 't4',
+  //     description: 'Sale of Wireless Headphones',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 30.0 * 2,  // Sale of 2 Wireless Headphones
+  //     creditAmount: 30.0 * 2,  // Sale of 2 Wireless Headphones
+  //     date: DateTime.now().subtract(Duration(days: 5)),  // 5 Days Ago
+  //   ),
+  //
+  //   // Sale for Personal Care & Hygiene
+  //   Transaction(
+  //     id: 't5',
+  //     description: 'Sale of Hand Sanitizer',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 1.5 * 20,  // Sale of 20 Hand Sanitizers
+  //     creditAmount: 1.5 * 20,  // Sale of 20 Hand Sanitizers
+  //     date: DateTime.now().subtract(Duration(days: 6)),  // 6 Days Ago
+  //   ),
+  //
+  //   // Sale for Health & Wellness
+  //   Transaction(
+  //     id: 't6',
+  //     description: 'Sale of Hand Sanitizer',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 1.5 * 15,  // Sale of 15 Hand Sanitizers
+  //     creditAmount: 1.5 * 15,  // Sale of 15 Hand Sanitizers
+  //     date: DateTime.now().subtract(Duration(days: 7)),  // 7 Days Ago
+  //   ),
+  //
+  //   // Sale for Books & Learning Resources
+  //   Transaction(
+  //     id: 't7',
+  //     description: 'Sale of Notebook',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 1.8 * 25,  // Sale of 25 Notebooks
+  //     creditAmount: 1.8 * 25,  // Sale of 25 Notebooks
+  //     date: DateTime.now().subtract(Duration(days: 8)),  // 8 Days Ago
+  //   ),
+  //
+  //   // Sale for Tech & Accessories
+  //   Transaction(
+  //     id: 't8',
+  //     description: 'Sale of Wireless Headphones',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
+  //     creditAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
+  //     date: DateTime.now().subtract(Duration(days: 10)), // 10 Days Ago
+  //   ),
+  //
+  //   // Sale for Food & Beverages
+  //   Transaction(
+  //     id: 't9',
+  //     description: 'Sale of Sandwich',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 3.5 * 10,  // Sale of 10 Sandwiches
+  //     creditAmount: 3.5 * 10,  // Sale of 10 Sandwiches
+  //     date: DateTime.now().subtract(Duration(days: 12)), // 12 Days Ago
+  //   ),
+  //
+  //   // Sale for Personal Care & Hygiene
+  //   Transaction(
+  //     id: 't10',
+  //     description: 'Sale of Hand Sanitizer',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 1.5 * 50,  // Sale of 50 Hand Sanitizers
+  //     creditAmount: 1.5 * 50,  // Sale of 50 Hand Sanitizers
+  //     date: DateTime.now().subtract(Duration(days: 15)), // 15 Days Ago
+  //   ),
+  //
+  //   // Sale for Stationery
+  //   Transaction(
+  //     id: 't11',
+  //     description: 'Sale of Notebook',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 1.8 * 5,   // Sale of 5 Notebooks
+  //     creditAmount: 1.8 * 5,   // Sale of 5 Notebooks
+  //     date: DateTime.now().subtract(Duration(days: 18)), // 18 Days Ago
+  //   ),
+  //
+  //   // Sale for School Uniforms
+  //   Transaction(
+  //     id: 't12',
+  //     description: 'Sale of School Shirt',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 12.0 * 7,   // Sale of 7 School Shirts
+  //     creditAmount: 12.0 * 7,   // Sale of 7 School Shirts
+  //     date: DateTime.now().subtract(Duration(days: 20)), // 20 Days Ago
+  //   ),
+  //
+  //   // Sale for Food & Beverages
+  //   Transaction(
+  //     id: 't13',
+  //     description: 'Sale of Sandwich',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 3.5 * 8,   // Sale of 8 Sandwiches
+  //     creditAmount: 3.5 * 8,   // Sale of 8 Sandwiches
+  //     date: DateTime.now().subtract(Duration(days: 22)), // 22 Days Ago
+  //   ),
+  //
+  //   // Sale for Tech & Accessories
+  //   Transaction(
+  //     id: 't14',
+  //     description: 'Sale of Wireless Headphones',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 30.0 * 3,  // Sale of 3 Wireless Headphones
+  //     creditAmount: 30.0 * 3,  // Sale of 3 Wireless Headphones
+  //     date: DateTime.now().subtract(Duration(days: 25)), // 25 Days Ago
+  //   ),
+  //
+  //   // Sale for Tech & Accessories
+  //   Transaction(
+  //     id: 't15',
+  //     description: 'Sale of Wireless Headphones',
+  //     debitAccount: 'Cash',
+  //     creditAccount: 'Sales Revenue',
+  //     debitAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
+  //     creditAmount: 30.0 * 1,  // Sale of 1 Wireless Headphones
+  //     date: DateTime.now().subtract(Duration(days: 30)), // 30 Days Ago
+  //   ),
+  // ];
 
   // Main categories list (same data as before)
   final List<Category> _mainCategories = [
@@ -278,9 +278,9 @@ class InventoryProvider extends ChangeNotifier {
     _mainCategories.add(category);
     notifyListeners();
   }
-  List<Transaction> getAllSales() {
-    return dummySalesData;  // Returning the dummy sales data
-  }
+  // List<Transaction> getAllSales() {
+  //   return dummySalesData;  // Returning the dummy sales data
+  // }
   // Optionally, remove a product or category (just as an example)
   void removeProduct(String productId) {
     _products.removeWhere((product) => product.id == productId);

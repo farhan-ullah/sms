@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school/ui/presentation/accounts/revenue_expense_screen.dart';
 import 'package:school/ui/presentation/attendenceScreens/settings.dart';
 import 'package:school/ui/presentation/attendenceScreens/take_attendance_screen.dart';
 import 'package:school/ui/presentation/canteenScreens/product_list_screen.dart';
@@ -28,6 +29,7 @@ import 'package:school/ui/presentation/teachers_screens/manage_teacher_screen.da
 import 'package:school/ui/presentation/timeTableScreens/timetable_creation_screen.dart';
 import 'package:school/ui/presentation/timeTableScreens/timetable_preview_screen.dart';
 import 'package:school/ui/presentation/transportScreens/routes_screen.dart';
+import 'package:school/ui/presentation/user_management_screen.dart';
 import 'package:school/ui/presentation/widgets/side_bar.dart';
 import 'accounts/report_screen.dart';
 import 'attendenceScreens/attendance_reports.dart';
@@ -131,7 +133,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         return UnderDevelopmentExam();
       // return  ExamRegistrationScreen();
       case 22: // About
-        return  MarksEntryScreen(examID:"EXAM123");
+        return  UserManagementScreen();
       //   case 23: // About
       // return  ExamsScreen();
       case 24: // About
@@ -153,7 +155,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
       case 33: // About
         return  ProductListScreen();
       case 34: // About
-        return  StockManagementScreen();
+        // return  StockManagementScreen();
 
       case 37: // About
         return  SalesReportScreen();
@@ -171,8 +173,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
         return  SalaryReportScreen();
       case 45: // About
         return  SalaryTierScreen();
-      // case 46: // About
-      //   return  ReportScreen(transactions: [],);
+      case 46: // About
+        return RevenueExpenseScreen();
       case 47: // About
         return  SettingsScreen();
       default: // Default to Dashboard screen

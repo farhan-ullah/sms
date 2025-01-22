@@ -8,8 +8,14 @@ class Transaction {
   final double debitAmount;
   final double creditAmount;
   final DateTime date;
+  final String category;
+  final String? subCategory;
+  final bool isRevenue;
+  final bool isExpense;
 
   Transaction({
+    required this.isExpense,
+    required this.isRevenue,
     required this.id,
     required this.description,
     required this.debitAccount,
@@ -17,5 +23,8 @@ class Transaction {
     required this.debitAmount,
     required this.creditAmount,
     required this.date,
+    required this.category,
+    this.subCategory
   });
 }
+

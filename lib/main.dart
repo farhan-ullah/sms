@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,6 +18,7 @@ import 'package:school/services/id_service/id_service.dart';
 import 'package:school/ui/presentation/navigation_screen.dart';
 import 'businessLogic/providers/id_provider.dart';
 import 'businessLogic/providers/inventory_provider.dart';
+import 'businessLogic/providers/transaction_provider.dart';
 import 'businessLogic/providers/transport_route_provider.dart';
 import 'constants/common_keys.dart';
 
@@ -59,6 +59,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => TransportRouteProvider(),
+
+        ),
+        ChangeNotifierProvider(
+          create: (context) => TransactionProvider(),
 
         ),
         ChangeNotifierProvider(

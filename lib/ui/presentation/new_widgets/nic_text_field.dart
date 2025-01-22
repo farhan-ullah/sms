@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class NicTextField extends StatelessWidget {
+class NicTextField extends StatefulWidget {
   TextEditingController controller ;
    NicTextField({super.key,required this.controller});
 
+  @override
+  State<NicTextField> createState() => _NicTextFieldState();
+}
+
+class _NicTextFieldState extends State<NicTextField> {
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Adding a listener to manage the focus state
+    _focusNode.addListener(() {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return   SizedBox(
@@ -22,21 +40,56 @@ class NicTextField extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextFormField(
               autofocus: true,
-              stylusHandwritingEnabled: true,
+              // stylusHandwritingEnabled: true,
               decoration: InputDecoration(
-                hintText: 'Enter NIC',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                // labelText: "Enter N-I-C",
+                hintStyle: TextStyle(color: Colors.grey[500], fontSize: 16),
+                hintText: "National ID number",
+                labelStyle: TextStyle(
+                  color: _isFocused
+                      ? Colors.blueAccent
+                      : Colors.grey[600], // Adjust color based on focus
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.blueAccent,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(25), // Fully rounded border
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.grey[300]!,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(25), // Fully rounded border
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.red,
+                    width: 1.5,
+                  ),
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Colors.red,
+                    width: 2.0,
+                  ),
+                  borderRadius: BorderRadius.circular(25),
+                ),
                 filled: true,
-                fillColor: Colors.grey[200],
-
-
-                isDense: true,  // This reduces the height by making the field more compact
+                fillColor: Colors.grey[100],  // Subtle background color
+                isDense: true, // Compact input field
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
-                  vertical: 12,  // You can reduce this value to make the height smaller
-                ),              ),
+                  vertical: 16,
+                ),
+              ),
             autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: controller,
+              controller: widget.controller,
 
               keyboardType: TextInputType.number,
               inputFormatters: [_formatter],
@@ -47,7 +100,6 @@ class NicTextField extends StatelessWidget {
       ),
     );
   }
-
 }
 
 // Regular expression to validate the input format

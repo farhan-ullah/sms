@@ -21,7 +21,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
-  bool showData = false;
+  bool showData = true;
 
   // Function to update selected index
   void _onItemTapped(int index) {
@@ -81,7 +81,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     showData = !showData;
                   });
                 },
-                icon: Icon(FontAwesomeIcons.solidEye),
+                icon: Icon(
+                    showData? FontAwesomeIcons.eyeSlash:
+                    FontAwesomeIcons.solidEye),
               ),
             ],
           ),
@@ -168,12 +170,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 18.0,horizontal: 15),
       child: Container(
+        height: MediaQuery.of(context).size.height*0.12,
+        width: MediaQuery.of(context).size.width*0.12,
+
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blueAccent, Colors.blue], // Gradient background
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF4ECDC4), Color(0xFF556270)],
+            begin: Alignment.center,
+            end: Alignment.center,
           ),
           borderRadius: BorderRadius.circular(16), // Rounded corners
           boxShadow: [
@@ -249,9 +254,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           titlesData: FlTitlesData(show: true),
           gridData: FlGridData(show: true),
           barGroups: [
-            BarChartGroupData(x: 0, barRods: [BarChartRodData(fromY: 8, color: Colors.blue, toY: 1)]),
-            BarChartGroupData(x: 1, barRods: [BarChartRodData(fromY: 6, color: Colors.blue, toY: 13)]),
-            BarChartGroupData(x: 2, barRods: [BarChartRodData(fromY: 5, color: Colors.blue, toY: 7)]),
+            BarChartGroupData(x: 0, barRods: [BarChartRodData(fromY: 8, color: Color(0xff1B3857FF), toY: 1)]),
+            BarChartGroupData(x: 1, barRods: [BarChartRodData(fromY: 6, color: Color(0xff1B3857FF), toY: 13)]),
+            BarChartGroupData(x: 2, barRods: [BarChartRodData(fromY: 5, color: Color(0xff1B3857FF), toY: 7)]),
           ],
         ),
       ),

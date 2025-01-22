@@ -11,6 +11,9 @@ class RoutesScreen extends StatefulWidget {
 }
 
 class _RoutesScreenState extends State<RoutesScreen> {
+  TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
   @override
   Widget build(BuildContext context) {
     final routeProvider = Provider.of<TransportRouteProvider>(context);
@@ -19,18 +22,19 @@ class _RoutesScreenState extends State<RoutesScreen> {
       appBar: AppBar(
         title: Text('Transport Routes'),
         backgroundColor: Colors.blueAccent,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              // Future Search functionality
-            },
-          ),
-        ],
       ),
       body: Consumer<TransportRouteProvider>(
         builder: (context, value, child) {
           List<RouteModel> routes = value.getRoutes();
+
+          // Filter routes based on search query
+          if (_searchQuery.isNotEmpty) {
+            routes = routes
+                .where((route) => route.routeName
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()))
+                .toList();
+          }
 
           if (routes.isEmpty) {
             return Center(
@@ -43,46 +47,70 @@ class _RoutesScreenState extends State<RoutesScreen> {
 
           return Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ListView.builder(
-              itemCount: routes.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    labelText: 'Search Routes',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
                   ),
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    leading: Icon(
-                      Icons.directions_bus,
-                      color: Colors.blueAccent,
-                      size: 30,
-                    ),
-                    title: Text(
-                      routes[index].routeName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
+                  onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 16),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: routes.length,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    ),
-                    subtitle: Text(
-                      'Driver: ${routes[index].driverName}\nFee: \$${routes[index].routeFee}',
-                      style: TextStyle(
-                        color: Colors.grey[700],
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16),
+                        leading: Icon(
+                          Icons.directions_bus,
+                          color: Colors.blueAccent,
+                          size: 30,
+                        ),
+                        title: Text(
+                          routes[index].routeName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Driver: ${routes[index].driverName}\nFee: \$${routes[index].routeFee}',
+                          style: TextStyle(
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                        trailing: PopupMenuButton(itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(child: ListTile(onTap: (){},
+                              leading: Icon(Icons.edit),title: Text("Edit"),)),
+                            PopupMenuItem(child: ListTile(
+                              onTap: () {},
+                              leading: Icon(Icons.delete),title: Text("Delete"),)),
+                          ];
+                        }),
+                        onTap: () {
+                          // Show the bottom sheet with route details
+                          _showRouteDetailsBottomSheet(context, routes[index]);
+                        },
                       ),
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.blueAccent,
-                    ),
-                    onTap: () {
-                      // Show the bottom sheet with route details
-                      _showRouteDetailsBottomSheet(context, routes[index]);
-                    },
-                  ),
-                );
-              },
+                    );
+                  },
+                ),
+              ],
             ),
           );
         },
@@ -335,4 +363,3 @@ class _AddRouteBottomSheetState extends State<AddRouteBottomSheet> {
     );
   }
 }
-
