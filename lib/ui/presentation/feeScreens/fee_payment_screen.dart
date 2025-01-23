@@ -17,6 +17,7 @@ class _FeePaymentScreenState extends State<FeePaymentScreen> {
   String? selectedFeeType;
   String? paymentStatus;
   String searchQuery = "";
+  final TextEditingController _feeController = TextEditingController();
   FeeModel? paidFee; // Track which fee has been paid
 
   @override
@@ -62,12 +63,13 @@ class _FeePaymentScreenState extends State<FeePaymentScreen> {
                         selectedClass = value;
                       });
                     },
-                    items: _getClassNames(feeData).map((className) {
-                      return DropdownMenuItem<String>(
-                        value: className,
-                        child: Text(className),
-                      );
-                    }).toList(),
+                    items:
+                        _getClassNames(feeData).map((className) {
+                          return DropdownMenuItem<String>(
+                            value: className,
+                            child: Text(className),
+                          );
+                        }).toList(),
                   ),
                 ),
                 SizedBox(width: 10),
@@ -80,12 +82,21 @@ class _FeePaymentScreenState extends State<FeePaymentScreen> {
                         selectedFeeType = value;
                       });
                     },
-                    items: ['Admission Fee', 'Tuition Fee', 'Lab Fee', 'Sports Fee', 'Transport Fee', 'Fine', 'Other'].map((feeType) {
-                      return DropdownMenuItem<String>(
-                        value: feeType,
-                        child: Text(feeType),
-                      );
-                    }).toList(),
+                    items:
+                        [
+                          'Admission Fee',
+                          'Tuition Fee',
+                          'Lab Fee',
+                          'Sports Fee',
+                          'Transport Fee',
+                          'Fine',
+                          'Other',
+                        ].map((feeType) {
+                          return DropdownMenuItem<String>(
+                            value: feeType,
+                            child: Text(feeType),
+                          );
+                        }).toList(),
                   ),
                 ),
                 SizedBox(width: 10),
@@ -98,12 +109,15 @@ class _FeePaymentScreenState extends State<FeePaymentScreen> {
                         paymentStatus = value;
                       });
                     },
-                    items: ['Paid', 'Pending', 'Partially Paid', 'Overdue'].map((status) {
-                      return DropdownMenuItem<String>(
-                        value: status,
-                        child: Text(status),
-                      );
-                    }).toList(),
+                    items:
+                        ['Paid', 'Pending', 'Partially Paid', 'Overdue'].map((
+                          status,
+                        ) {
+                          return DropdownMenuItem<String>(
+                            value: status,
+                            child: Text(status),
+                          );
+                        }).toList(),
                   ),
                 ),
                 SizedBox(width: 10),
@@ -127,62 +141,215 @@ class _FeePaymentScreenState extends State<FeePaymentScreen> {
 
           // List of filtered fees
           Expanded(
-            child: ListView.builder(
-              itemCount: filteredFees.length,
-              itemBuilder: (context, index) {
-                final fee = filteredFees[index];
-                final student = studentProvider.mockStudentList
-                    .firstWhere((student) => student.studentId == fee.feeId, orElse: () => StudentModel(
-                  studentId: fee.feeId ?? '',
-                  firstName: "Unknown",
-                  lastName: "Student",
-                  classID: fee.classID,
-                ));
-
-                return GestureDetector(
-                  onTap: () {
-                    // _showPaymentDialog(student, studentFees);
-                  },
-                  child: Card(
-                    elevation: 4,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(width: 30),
-                        Expanded(flex: 1, child: Text(fee.feeId.toString())),
-                        SizedBox(width: 30),
-                        Expanded(
-                          flex: 2,
-                          child: Text("${student.firstName} ${student.lastName}"),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(width: 30),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "Fee Amount",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
                         ),
-                        Expanded(flex: 1, child: Text(fee.classID ?? "")),
-                        SizedBox(width: 30),
-                        ElevatedButton(
-                          onPressed: () {
-                            _payFee(fee);
-                          },
-                          child: Text("Pay Fee"),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                    SizedBox(width: 30),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        "Student Name",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "Arrears",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "Generated Fee",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 30),
+                    SizedBox(
+                      width: 70,
+                      child: Text(
+                        "Actions",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    PopupMenuButton(
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Enter fee amount"),
+                                    content: TextFormField(
+                                      controller: _feeController,
+                                    ),
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () {},
+                                        child: Text("Cancel"),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          ///It should add the pay the entered amount and add the remaining amount to arrears for the given student itself
+                                        },
+                                        child: Text("Submit"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Text("Pay partial Fee"),
+                          ),
+                        ];
+                      },
+                    ),
+                  ],
+                ),
+
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: filteredFees.length,
+                  itemBuilder: (context, index) {
+                    final fee = filteredFees[index];
+                    final student = studentProvider.mockStudentList.firstWhere(
+                      (student) => student.studentId == fee.feeId,
+                      orElse:
+                          () => StudentModel(
+                            studentId: fee.feeId ?? '',
+                            firstName: "Unknown",
+                            lastName: "Student",
+                            classID: fee.classID,
+                          ),
+                    );
+
+                    return GestureDetector(
+                      onTap: () {
+                        // _showPaymentDialog(student, studentFees);
+                      },
+                      child: Card(
+                        elevation: 4,
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(width: 30),
+                            Expanded(
+                              flex: 1,
+                              child: Text(fee.feeId.toString()),
+                            ),
+                            SizedBox(width: 30),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                "${student.firstName} ${student.lastName}",
+                              ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(fee.feeArrears.toString()),
+                            ),
+
+                            Expanded(
+                              flex: 1,
+                              child: Text(fee.generatedFeeAmount.toString()),
+                            ),
+                            SizedBox(width: 30),
+                            ElevatedButton(
+                              onPressed: () {
+                                _payFee(fee);
+                              },
+                              child: Text("Pay Fee"),
+                            ),
+                            SizedBox(width: 20),
+                            PopupMenuButton(
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text("Enter fee amount"),
+                                            content: TextFormField(
+                                              controller: _feeController,
+                                            ),
+                                            actions: [
+                                              ElevatedButton(
+                                                onPressed: () {},
+                                                child: Text("Cancel"),
+                                              ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  ///It should add the pay the entered amount and add the remaining amount to arrears for the given student itself
+                                                },
+                                                child: Text("Submit"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Text("Pay partial Fee"),
+                                  ),
+                                ];
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],
       ),
-      bottomSheet: paidFee != null
-          ? Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: ElevatedButton(
-          onPressed: () {
-            _showReceiptDialog(paidFee!);
-          },
-          child: Text("Print Receipt"),
-        ),
-      )
-          : null,
+      bottomSheet:
+          paidFee != null
+              ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    _showReceiptDialog(paidFee!);
+                  },
+                  child: Text("Print Receipt"),
+                ),
+              )
+              : null,
     );
   }
 
@@ -203,49 +370,52 @@ class _FeePaymentScreenState extends State<FeePaymentScreen> {
   }
 
   void _showReceiptDialog(FeeModel fee) {
-    final student = Provider.of<StudentProvider>(context, listen: false)
-        .mockStudentList
-        .firstWhere((student) => student.studentId == fee.feeId, orElse: () => StudentModel(
-      studentId: fee.feeId ?? '',
-      firstName: "Unknown",
-      lastName: "Student",
-      classID: fee.classID,
-    ));
+    final student = Provider.of<StudentProvider>(
+      context,
+      listen: false,
+    ).mockStudentList.firstWhere(
+      (student) => student.studentId == fee.feeId,
+      orElse:
+          () => StudentModel(
+            studentId: fee.feeId ?? '',
+            firstName: "Unknown",
+            lastName: "Student",
+            classID: fee.classID,
+          ),
+    );
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Receipt"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Student: ${student.firstName} ${student.lastName}"),
-            Text("Class: ${fee.classID}"),
-            Text("Fee Type: ${fee.feeType}"),
-            Text("Fee Name: ${fee.feeName}"),
-            Text("Amount: \$${fee.generatedFeeAmount}"),
-            Text("Payment Status: Paid"),
-            Text("Date: ${DateTime.now().toString()}"),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: Text("Close"),
+      builder:
+          (context) => AlertDialog(
+            title: Text("Receipt"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Student: ${student.firstName} ${student.lastName}"),
+                Text("Class: ${fee.classID}"),
+                Text("Fee Type: ${fee.feeType}"),
+                Text("Fee Name: ${fee.feeName}"),
+                Text("Amount: \$${fee.generatedFeeAmount}"),
+                Text("Payment Status: Paid"),
+                Text("Date: ${DateTime.now().toString()}"),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("Close"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
   List<String> _getClassNames(List<FeeModel> feeData) {
-    return feeData
-        .map((fee) => fee.classID ?? "")
-        .toSet()
-        .toList();
+    return feeData.map((fee) => fee.classID ?? "").toSet().toList();
   }
 
   List<FeeModel> _filterFees(List<FeeModel> feeData) {
