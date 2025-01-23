@@ -4,9 +4,9 @@ class ExamResult {
   String studentID;
   int marksObtained;
   String grade;
-  DateTime examDate; // Additional field for the exam date
-  int totalMarks; // Total marks available for the exam
-  String teacherID; // Teacher ID associated with the exam
+  DateTime examDate; // Additional field for the examModel date
+  int totalMarks; // Total marks available for the examModel
+  String teacherID; // Teacher ID associated with the examModel
 
   // Constructor with required fields, including totalMarks and teacherID
   ExamResult({
@@ -63,7 +63,7 @@ class ExamResult {
     }
   }
 
-  // Method to check if the exam result is valid (example validation based on marks)
+  // Method to check if the examModel result is valid (example validation based on marks)
   bool isValidResult() {
     return marksObtained >= 0 && marksObtained <= totalMarks;
   }

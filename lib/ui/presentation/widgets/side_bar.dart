@@ -118,7 +118,9 @@ class _SidebarState extends State<Sidebar> {
             icon: FontAwesomeIcons.edit,
             index: 9,
             children: [
-              _buildListItem(title: 'Under Development', icon: FontAwesomeIcons.underline, index: 21),
+              _buildListItem(title: 'Under Development', icon: FontAwesomeIcons.dev, index: 21),
+              // _buildListItem(title: 'Exam Results', icon: FontAwesomeIcons.underline, index: 22),
+
             ],
           ),
 
@@ -195,7 +197,7 @@ class _SidebarState extends State<Sidebar> {
           _buildListItem(hasPadding: true,
             title: 'User Management Screen',
             icon: FontAwesomeIcons.userGroup,
-            index: 22,
+            index: 23,
           ),
           // Settings Section
           _buildListItem(

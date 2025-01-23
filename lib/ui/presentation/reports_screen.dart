@@ -70,7 +70,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
           ListTile(
             title: const Text('Exam Reports'),
-            subtitle: const Text('Generate exam performance reports'),
+            subtitle: const Text('Generate examModel performance reports'),
             leading: const Icon(Icons.assignment),
             onTap: () {
               // Navigate to Exam Report Screen

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'mock_data.dart';  // Assuming mock data exists for students and exam results.
+import 'mock_data.dart';  // Assuming mock data exists for students and examModel results.
 
 class MarksEntryScreen extends StatefulWidget {
   final String examID;  // Exam ID to which marks belong
@@ -15,7 +15,7 @@ class _MarksEntryScreenState extends State<MarksEntryScreen> {
   // Controller for search bar
   TextEditingController searchController = TextEditingController();
 
-  // List of students who are enrolled for the exam
+  // List of students who are enrolled for the examModel
   List<Student> students = [];
 
   // Map to store the marks entered for students
@@ -24,11 +24,11 @@ class _MarksEntryScreenState extends State<MarksEntryScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the students list based on the exam ID
+    // Initialize the students list based on the examModel ID
     students = _getStudentsForExam(widget.examID);
   }
 
-  // Get a list of students who are enrolled in the exam
+  // Get a list of students who are enrolled in the examModel
   List<Student> _getStudentsForExam(String examID) {
     return mockStudents.where((student) => student.examID == examID).toList();
   }

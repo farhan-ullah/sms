@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../data/models/classNameModel/class_name_model.dart';
-import 'mock_data.dart'; // Assuming mock data exists for exam scheduling.
+import 'mock_data.dart'; // Assuming mock data exists for examModel scheduling.
 
 class ExamSchedulingScreen extends StatefulWidget {
   @override
@@ -149,7 +149,7 @@ class _ExamSchedulingScreenState extends State<ExamSchedulingScreen> {
     );
   }
 
-  // Show dialog to add a new exam schedule
+  // Show dialog to add a new examModel schedule
   void _showAddExamDialog() {
     showDialog(
       context: context,

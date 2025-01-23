@@ -1,157 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:school/businessLogic/providers/subject_provider.dart';
+import 'package:school/data/models/examModel/exam_model.dart';
+import 'package:school/data/models/examModel/paper_model.dart';
+import 'package:school/ui/presentation/examScreeens/paper_details_screen.dart'; // Adjust your imports
 
-import '../../../data/marks_model.dart';
-import 'mock_data.dart';  // Assuming mock data is in a file called mock_data.dart
+class ExamResultScreen extends StatelessWidget {
+  final ExamModel exam;
 
-class ExamResultsScreen extends StatefulWidget {
-  @override
-  _ExamResultsScreenState createState() => _ExamResultsScreenState();
-}
-
-class _ExamResultsScreenState extends State<ExamResultsScreen> {
-  String selectedGrade = 'All Grades';
-  String selectedSubject = 'All Subjects';
-  String searchQuery = '';
-
-  // Filter function to apply grade, subject, and search query
-  List<ExamResult> get filteredResults {
-    return mockExamResults.where((exam) {
-      // Filter by grade
-      bool gradeMatch = selectedGrade == 'All Grades' || exam.grade == selectedGrade;
-      // Filter by subject
-      bool subjectMatch = selectedSubject == 'All Subjects' || exam.subjectID == selectedSubject;
-      // Filter by search query (exam ID or grade or subject name)
-      bool searchMatch = exam.examID.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          exam.grade.toLowerCase().contains(searchQuery.toLowerCase()) ||
-          exam.subjectID.toLowerCase().contains(searchQuery.toLowerCase());
-
-      return gradeMatch && subjectMatch && searchMatch;
-    }).toList();
-  }
+  const ExamResultScreen({super.key, required this.exam});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Exam Results'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_alt),
-            onPressed: () => _showFilterDialog(context),
-          ),
-        ],
+        title: Text(exam.examName ?? 'Unknown Exam'),
+        backgroundColor: Colors.deepPurple,
       ),
-      body: Column(
-        children: [
-          // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              onChanged: (value) {
-                setState(() {
-                  searchQuery = value;
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Search Exam Results',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Student Details
+            Text(
+              "Student: ${exam.studentName ?? 'Unknown'}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
+            SizedBox(height: 10),
+            Text(
+              "Student ID: ${exam.studentID ?? 'N/A'}",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
 
-          // Display filtered exam results
-          Expanded(
-            child: ListView.builder(
-              itemCount: filteredResults.length,
+            // Exam Details
+            Text(
+              "Exam ID: ${exam.examId}",
+              style: TextStyle(fontSize: 18),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Exam Date: ${exam.examDate}",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 10),
+            Text(
+              "Description: ${exam.examDescription ?? 'No description available.'}",
+              style: TextStyle(fontSize: 16),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Overall Grade: ${exam.calculateExamGrade()}",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Pass Status: ${exam.checkIfPassed() ? 'Passed' : 'Failed'}",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Papers in this Exam:",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: exam.papers?.length ?? 0,
               itemBuilder: (context, index) {
-                final examResult = filteredResults[index];
+                final paper = exam.papers![index];
                 return Card(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  elevation: 4,
+                  margin: EdgeInsets.only(top: 8),
+                  elevation: 3,
                   child: ListTile(
-                    title: Text('${examResult.subjectID} - ${examResult.grade}'),
-                    subtitle: Text(
-                      'Student: ${examResult.studentID}\nMarks: ${examResult.marksObtained}\nDate: ${examResult.examDate.toLocal().toString().split(' ')[0]}',
-                    ),
-                    trailing: Icon(Icons.arrow_forward),
+                    title: Text(paper.paperName),
+                    subtitle: Text(paper.subjectId),
+                    trailing: Text('Grade: ${paper.grade ?? "N/A"}'),
                     onTap: () {
-                      // Handle tap - navigate to detailed view if needed
+                      // Navigate to PaperDetailsScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PaperDetailsScreen(paper: paper),
+                        ),
+                      );
                     },
                   ),
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
-  }
-
-  // Show filter dialog to choose grade and subject
-  void _showFilterDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Filter Exam Results'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Grade Filter Dropdown
-              DropdownButton<String>(
-                value: selectedGrade,
-                onChanged: (value) {
-                  setState(() {
-                    selectedGrade = value!;
-                  });
-                  Navigator.pop(context);
-                },
-                items: _getGradeDropdownItems(),  // Use helper function to generate items
-              ),
-              // Subject Filter Dropdown
-              DropdownButton<String>(
-                value: selectedSubject,
-                onChanged: (value) {
-                  setState(() {
-                    selectedSubject = value!;
-                  });
-                  Navigator.pop(context);
-                },
-                items: _getSubjectDropdownItems(),  // Use helper function to generate items
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  // Helper function to generate dropdown items for grades
-  List<DropdownMenuItem<String>> _getGradeDropdownItems() {
-    return ['All Grades', 'A', 'B', 'C', 'D', 'F'].map((String grade) {
-      return DropdownMenuItem<String>(
-        value: grade,
-        child: Text(grade),
-      );
-    }).toList();
-  }
-
-  // Helper function to generate dropdown items for subjects
-  List<DropdownMenuItem<String>> _getSubjectDropdownItems() {
-    final subjectProvider = Provider.of<SubjectProvider>(context);
-    List<String> subjects = ['All Subjects'] +
-        subjectProvider.mockSubjectList.map((subject) => subject.subjectID!).toList().toSet().toList();
-
-    return subjects.map((String subject) {
-      return DropdownMenuItem<String>(
-        value: subject,
-        child: Text(subject),
-      );
-    }).toList();
   }
 }

@@ -5,8 +5,10 @@ import 'package:school/ui/presentation/attendenceScreens/take_attendance_screen.
 import 'package:school/ui/presentation/canteenScreens/product_list_screen.dart';
 import 'package:school/ui/presentation/canteenScreens/sales_report_screen.dart';
 import 'package:school/ui/presentation/canteenScreens/stock_management_screen.dart';
+import 'package:school/ui/presentation/examScreeens/exam_list_screen.dart';
 import 'package:school/ui/presentation/examScreeens/exam_result_screen.dart';
 import 'package:school/ui/presentation/examScreeens/exam_scheduling_screen.dart';
+import 'package:school/ui/presentation/examScreeens/exam_screen.dart';
 import 'package:school/ui/presentation/examScreeens/marks_entry_screen.dart';
 import 'package:school/ui/presentation/expense_screens/expense_categories_screen.dart';
 import 'package:school/ui/presentation/expense_screens/expense_dashboard_screen.dart';
@@ -18,6 +20,7 @@ import 'package:school/ui/presentation/salaryScreens/payslip_screeen.dart';
 import 'package:school/ui/presentation/salaryScreens/salary_payment_screen.dart';
 import 'package:school/ui/presentation/salaryScreens/salary_tiers.dart';
 import 'package:school/ui/presentation/salaryScreens/salary_report_screen.dart';
+import 'package:school/ui/presentation/setting.dart';
 import 'package:school/ui/presentation/staffScreens/add_edit_staff_screen.dart';
 import 'package:school/ui/presentation/staffScreens/staff_attendance_report_screen.dart';
 import 'package:school/ui/presentation/staffScreens/staff_list_screen.dart';
@@ -130,14 +133,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
       case 20: // About
         return  AttendanceReportScreen();
         case 21: // About
-        return UnderDevelopmentExam();
-      // return  ExamRegistrationScreen();
-      case 22: // About
+        return ExamRegistrationScreen();
+      // case 22:
+      // return  ExamListScreen();
+      case 23: // About
         return  UserManagementScreen();
       //   case 23: // About
       // return  ExamsScreen();
       case 24: // About
-      return  ExamResultsScreen();
+      // return  ExamResultScreen();
       case 25: // About
       return  ExamSchedulingScreen();
       case 26: // About
@@ -176,6 +180,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
       case 46: // About
         return RevenueExpenseScreen();
       case 47: // About
+        return  SettingsScreen();
+
+      case 50: // About
         return  SettingsScreen();
       default: // Default to Dashboard screen
         return  DashboardScreen();
