@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AddExpenseScreen extends StatefulWidget {
   @override
@@ -16,7 +16,6 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
   // Expense Categories and their corresponding Chart of Accounts
   final Map<String, String> _categoryToAccount = {
-    // 'Salaries': 'Personnel Expenses',
     'Bills': 'Utilities Expenses',
     'Maintenance': 'Maintenance Expenses',
     'Supplies': 'Operational Expenses',
@@ -26,9 +25,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
     'Miscellaneous': 'Miscellaneous Expenses',
   };
 
-  // List of categories (expanded)
+  // List of categories
   final List<String> _categories = [
-    // 'Salaries',
     'Bills',
     'Maintenance',
     'Supplies',
@@ -45,19 +43,45 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   void _saveExpense() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
+      // Prepare the expense data
+      Map<String, String> expenseData = {
+        'category': _category,
+        'account': _account,
+        'amount': _amount.toString(),
+        'description': _description,
+        'date': _date.toLocal().toString().split(' ')[0],
+      };
+
+      // Send data to Firestore
+      sendExpenseDataToFirestore(expenseData);
+
+      // Save the expense in the list (in-memory storage)
       setState(() {
-        // Save the expense in the list (in-memory storage)
-        _expenses.add({
-          'category': _category,
-          'account': _account,
-          'amount': _amount.toString(),
-          'description': _description,
-          'date': _date.toLocal().toString().split(' ')[0],
-        });
+        _expenses.add(expenseData);
       });
+
       // Clear the form for the next entry
       _formKey.currentState!.reset();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Expense Added")));
+
+      // Show a success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Expense Added")),
+      );
+    }
+  }
+
+  Future<void> sendExpenseDataToFirestore(
+      Map<String, String> expenseData) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      // Add expense data to the 'expenses' collection
+      await firestore.collection('expenses').add(expenseData);
+
+      print('Expense data sent to Firestore successfully!');
+    } catch (e) {
+      print('Error sending expense data to Firestore: $e');
     }
   }
 
@@ -77,16 +101,17 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 onChanged: (value) {
                   setState(() {
                     _category = value!;
-                    _account = _categoryToAccount[_category]!; // Automatically update the account
+                    _account = _categoryToAccount[
+                        _category]!; // Automatically update the account
                   });
                 },
                 items: _categories
                     .map((category) => DropdownMenuItem(
-                    value: category, child: Text(category)))
+                        value: category, child: Text(category)))
                     .toList(),
                 decoration: InputDecoration(labelText: "Category"),
                 validator: (value) =>
-                value == null ? 'Please select a category' : null,
+                    value == null ? 'Please select a category' : null,
               ),
               SizedBox(height: 20),
 
@@ -94,7 +119,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
               TextFormField(
                 decoration: InputDecoration(labelText: "Amount (PKR)"),
                 keyboardType: TextInputType.number,
-                onSaved: (value) => _amount = double.tryParse(value ?? '') ?? 0.0,
+                onSaved: (value) =>
+                    _amount = double.tryParse(value ?? '') ?? 0.0,
                 validator: (value) {
                   if (value == null || value.isEmpty)
                     return 'Please enter an amount';
@@ -105,14 +131,16 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
               // Description Input
               TextFormField(
-                decoration: InputDecoration(labelText: "Description (Optional)"),
+                decoration:
+                    InputDecoration(labelText: "Description (Optional)"),
                 onSaved: (value) => _description = value ?? '',
               ),
               SizedBox(height: 20),
 
               // Account (Non-editable, filled based on Category)
               TextFormField(
-                enabled: false, // Account is set automatically based on category
+                enabled:
+                    false, // Account is set automatically based on category
                 decoration: InputDecoration(
                   labelText: "Account",
                   hintText: _account,
@@ -122,7 +150,8 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
 
               // Date Picker
               ListTile(
-                title: Text("Date: ${_date.toLocal().toString().split(' ')[0]}"),
+                title:
+                    Text("Date: ${_date.toLocal().toString().split(' ')[0]}"),
                 trailing: Icon(Icons.calendar_today),
                 onTap: () async {
                   DateTime? selectedDate = await showDatePicker(

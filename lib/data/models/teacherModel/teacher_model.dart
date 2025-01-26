@@ -1,44 +1,44 @@
 import 'package:hive/hive.dart';
 import 'package:school/data/models/salary_model.dart';
 
+class TeacherModel {
+  String? teacherId;
 
- class TeacherModel {
-   String? teacherId;
+  String? teacherFirstName;
 
-   String? teacherFirstName;
+  String? teacherLastName;
 
-   String? teacherLastName;
+  String? qualification;
 
-   String? qualification;
+  List<String>? teacherSubjectIDs;
 
-   List<String>? teacherSubjectIDs;
+  String? dateOfJoining;
 
-   String? dateOfJoining;
+  String? teacherAddress;
 
-   String? teacherAddress;
+  String? teacherPhoneNumber;
 
-   String? teacherPhoneNumber;
+  String? teacherEmail;
+  String? subject;
+  String? salaryTier;
 
-   String? teacherEmail;
+  Map<String, Salary>? salaries;
 
-   String? salaryTier;
-
-   Map<String, Salary>? salaries;
-
-   String? teacherNic;
+  String? teacherNic;
 
   TeacherModel({
     this.salaries,
-    this.teacherNic="",
-    this.dateOfJoining="",
-    this.qualification="",
-    this.salaryTier="",
-    this.teacherSubjectIDs =const [],
-    this.teacherAddress="",
-    this.teacherEmail="",
-    this.teacherFirstName="",
-    this.teacherId="",
-    this.teacherLastName="",
-    this.teacherPhoneNumber="",
+    this.teacherNic = "",
+    this.dateOfJoining = "",
+    this.qualification = "",
+    this.salaryTier = "",
+    this.teacherSubjectIDs = const [],
+    this.teacherAddress = "",
+    this.teacherEmail = "",
+    this.teacherFirstName = "",
+    this.teacherId = "",
+    this.subject="",
+    this.teacherLastName = "",
+    this.teacherPhoneNumber = "",
   });
 }

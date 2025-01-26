@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:school/businessLogic/providers/id_provider.dart';
@@ -102,7 +103,8 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(key: _formKey,
+        child: Form(
+          key: _formKey,
           child: ListView(
             children: [
               // Teacher ID
@@ -113,7 +115,7 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
                   Expanded(
                     child: CustomTextfield(
                       validator: (value) {
-                        if(value?.isEmpty??false){
+                        if (value?.isEmpty ?? false) {
                           return "Must Enter first Name";
                         }
                         return null;
@@ -125,30 +127,30 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
                   Expanded(
                     child: CustomTextfield(
                       validator: (value) {
-                        if(value?.isEmpty??false){
+                        if (value?.isEmpty ?? false) {
                           return "Must Enter last Name";
                         }
                         return null;
                       },
-
                       labelText: 'Last Name',
                       controller: _lastNameController,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 7,),
+              SizedBox(
+                height: 7,
+              ),
               Row(
                 children: [
                   Expanded(
                     child: CustomTextfield(
                       validator: (value) {
-                        if(value?.isEmpty??false){
+                        if (value?.isEmpty ?? false) {
                           return "Must Enter Phone Number";
                         }
                         return null;
                       },
-
                       labelText: 'Phone Number',
                       controller: _phoneNumberController,
                     ),
@@ -169,12 +171,11 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
                   Expanded(
                     child: CustomTextfield(
                       validator: (value) {
-                        if(value?.isEmpty??false){
+                        if (value?.isEmpty ?? false) {
                           return "Must Enter a Qualification";
                         }
                         return null;
                       },
-
                       labelText: 'Qualification',
                       controller: _qualificationController,
                     ),
@@ -184,12 +185,11 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
                   Expanded(
                     child: CustomTextfield(
                       validator: (value) {
-                        if(value?.isEmpty??false){
+                        if (value?.isEmpty ?? false) {
                           return "Must Enter a Subject";
                         }
                         return null;
                       },
-
                       labelText: 'Subject',
                       controller: _subjectController,
                     ),
@@ -199,12 +199,11 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
               // Address
               CustomTextfield(
                 validator: (value) {
-                  if(value?.isEmpty??false){
+                  if (value?.isEmpty ?? false) {
                     return "Must Enter a Complete Address";
                   }
                   return null;
                 },
-
                 labelText: 'Address',
                 controller: _addressController,
               ),
@@ -239,47 +238,35 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
 
               // Add Teacher Button
               ElevatedButton(
-                onPressed: () {
-                  String teacherID = idProvider.teacherId;
-                  final teacherProvider = Provider.of<TeacherProvider>(
-                    context,
-                    listen: false,
-                  );
-                  TeacherModel teacherModel = TeacherModel(
-                    dateOfJoining: _dateOfJoiningController.text,
-                    qualification: _qualificationController.text,
-                    salaryTier: _salaryTierController.text,
-                    teacherAddress: _addressController.text,
-                    teacherId: teacherID,
-                    teacherFirstName: _firstNameController.text,
-                    teacherLastName: _lastNameController.text,
-                    teacherEmail: _emailController.text,
-                    teacherNic: _nicController.text,
-                    teacherPhoneNumber: _phoneNumberController.text,
-
-                    // teacherSubject: _subjectController.text,
-                  );
-
-                  if(_formKey.currentState?.validate()??false){
-                    teacherProvider.enrollTeacher(teacherModel);
-
-                    // Show a success message after adding the teacher
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Teacher added successfully!')),
-
+                onPressed: () async {
+                  if (_formKey.currentState?.validate() ?? false) {
+                    // Create an instance of TeacherModel
+                    TeacherModel teacherModel = TeacherModel(
+                      dateOfJoining: _dateOfJoiningController.text,
+                      qualification: _qualificationController.text,
+                      salaryTier: _salaryTierController.text,
+                      teacherAddress: _addressController.text,
+                      teacherId: idProvider.teacherId,
+                      teacherFirstName: _firstNameController.text,
+                      teacherLastName: _lastNameController.text,
+                      teacherEmail: _emailController.text,
+                      teacherNic: _nicController.text,
+                      teacherPhoneNumber: _phoneNumberController.text,
+                      subject: _subjectController.text, // Add subject if needed
                     );
-                    _firstNameController.clear();
-                    _lastNameController.clear();
-                    _phoneNumberController.clear();
-                    _emailController.clear();
-                    _addressController.clear();
-                    _qualificationController.clear();
-                    _subjectController.clear();
-                    _nicController.clear();
-                    _dateOfJoiningController.clear();
+
+                    // Send data to Firestore
+                    await sendTeacherDataToFirestore(teacherModel);
+
+                    // Show a success message
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Teacher added successfully!')),
+                    );
+
+                    // Clear the form fields
+                    _clearFields();
                   }
-
-
                 },
                 child: const Text('Add Teacher'),
               ),
@@ -302,5 +289,30 @@ class _AddTeacherScreenState extends State<AddTeacherScreen> {
     _nicController.clear();
     _dateOfJoiningController.clear();
     _salaryTierController.clear();
+  }
+
+  Future<void> sendTeacherDataToFirestore(TeacherModel teacherData) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      // Add teacher data to the 'teachers' collection
+      await firestore.collection('teachers').doc(teacherData.teacherId).set({
+        'teacherId': teacherData.teacherId,
+        'teacherFirstName': teacherData.teacherFirstName,
+        'teacherLastName': teacherData.teacherLastName,
+        'teacherEmail': teacherData.teacherEmail,
+        'teacherPhoneNumber': teacherData.teacherPhoneNumber,
+        'teacherAddress': teacherData.teacherAddress,
+        'teacherNic': teacherData.teacherNic,
+        'qualification': teacherData.qualification,
+        'subject': teacherData.subject,
+        'dateOfJoining': teacherData.dateOfJoining,
+        'salaryTier': teacherData.salaryTier,
+      });
+
+      print('Teacher data sent to Firestore successfully!');
+    } catch (e) {
+      print('Error sending teacher data to Firestore: $e');
+    }
   }
 }

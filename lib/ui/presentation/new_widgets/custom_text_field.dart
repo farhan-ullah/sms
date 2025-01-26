@@ -50,7 +50,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
-        height: 100,  // Increased height for better visual appeal
+        height: 100, // Increased height for better visual appeal
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -65,15 +65,17 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                     fontWeight: FontWeight.w600, // Slightly bolder for emphasis
                     color: _isFocused
                         ? Colors.blueAccent
-                        : Colors.black.withOpacity(0.7), // Color change based on focus
+                        : Colors.black
+                            .withOpacity(0.7), // Color change based on focus
                     fontSize: 16,
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 10), // More spacing between label and input field
+            const SizedBox(
+                height: 10), // More spacing between label and input field
             TextFormField(
-              stylusHandwritingEnabled: true,
+              // stylusHandwritingEnabled: true,
 
               controller: widget.controller,
               focusNode: _focusNode,
@@ -98,14 +100,16 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                     color: Colors.blueAccent,
                     width: 2.0,
                   ),
-                  borderRadius: BorderRadius.circular(25), // Fully rounded border
+                  borderRadius:
+                      BorderRadius.circular(25), // Fully rounded border
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
                     color: Colors.grey[300]!,
                     width: 1.5,
                   ),
-                  borderRadius: BorderRadius.circular(25), // Fully rounded border
+                  borderRadius:
+                      BorderRadius.circular(25), // Fully rounded border
                 ),
                 errorBorder: OutlineInputBorder(
                   borderSide: BorderSide(
@@ -122,7 +126,7 @@ class _CustomTextfieldState extends State<CustomTextfield> {
                   borderRadius: BorderRadius.circular(25),
                 ),
                 filled: true,
-                fillColor: Colors.grey[100],  // Subtle background color
+                fillColor: Colors.grey[100], // Subtle background color
                 isDense: true, // Compact input field
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:school/businessLogic/providers/class_name_provider.dart';
 import 'package:school/businessLogic/providers/fee_provider.dart';
@@ -70,10 +71,8 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
   final TextEditingController rollNoController = TextEditingController();
 
   final TextEditingController placeOfBrithController = TextEditingController();
-String? selectedClassID = "";
-double? discountedTuitionFee;
-
-
+  String? selectedClassID = "";
+  double? discountedTuitionFee;
 
   @override
   void initState() {
@@ -118,9 +117,8 @@ double? discountedTuitionFee;
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    color:
-                        Colors
-                            .blueGrey[800], // Slightly dark background for contrast
+                    color: Colors
+                        .blueGrey[800], // Slightly dark background for contrast
                     child: Padding(
                       padding: const EdgeInsets.all(
                         16.0,
@@ -168,7 +166,6 @@ double? discountedTuitionFee;
                 children: [
                   Expanded(
                     child: CustomTextfield(
-
                       labelText: 'First Name',
                       controller: firstNameController,
                     ),
@@ -196,7 +193,6 @@ double? discountedTuitionFee;
                       },
                     ),
                   ),
-
                   Expanded(
                     child: CustomDatePicker(
                       controller: admissionDateController,
@@ -235,7 +231,6 @@ double? discountedTuitionFee;
                     ),
                   ),
                   const SizedBox(width: 10),
-
                 ],
               ),
               CustomTextfield(
@@ -273,102 +268,106 @@ double? discountedTuitionFee;
                   studentProvider.parentOption
                       ? SizedBox()
                       : Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: SearchAndSelectParent(), // Your custom widget for searching and selecting a parent
-                    ),
-                  ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child:
+                                SearchAndSelectParent(), // Your custom widget for searching and selecting a parent
+                          ),
+                        ),
                   studentProvider.parentOption
                       ? Card(
-                    elevation: 10,
-                    shadowColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    color: Colors.blueGrey[800],
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 12),
-                          const Text(
-                            'Parent ID :',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                          elevation: 10,
+                          shadowColor: Colors.grey,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          color: Colors.blueGrey[800],
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Row(
+                              children: [
+                                const SizedBox(width: 12),
+                                const Text(
+                                  'Parent ID :',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  idProvider
+                                      .parentId, // Parent ID dynamically fetched
+                                  style: TextStyle(
+                                    color: Colors.amberAccent,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 3),
-                          Text(
-                            idProvider.parentId, // Parent ID dynamically fetched
-                            style: TextStyle(
-                              color: Colors.amberAccent,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
+                        )
                       : SizedBox(),
                 ],
               ),
               parentToBeAdded ? const SizedBox(height: 10) : SizedBox(),
               parentToBeAdded
                   ? Row(
-                    children: [
-                      Expanded(
-                        child: CustomTextfield(
-                          labelText: 'Father/Guardian First Name',
-                          controller: fatherFirstNameController,
+                      children: [
+                        Expanded(
+                          child: CustomTextfield(
+                            labelText: 'Father/Guardian First Name',
+                            controller: fatherFirstNameController,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: CustomTextfield(
-                          labelText: 'Father/Guardian Last Name',
-                          controller: fatherLastNameController,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CustomTextfield(
+                            labelText: 'Father/Guardian Last Name',
+                            controller: fatherLastNameController,
+                          ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    )
                   : SizedBox(),
               const SizedBox(height: 10),
               parentToBeAdded
                   ? Row(
-                    children: [
-                      parentToBeAdded
-                          ? Expanded(
-                            child: EmailCustomTextfield(controller: fatherEmailController),
-                          )
-                          : SizedBox(),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: CustomTextfield(
-                          labelText: 'Phone No',
-                          controller: parentPhoneController,
+                      children: [
+                        parentToBeAdded
+                            ? Expanded(
+                                child: EmailCustomTextfield(
+                                    controller: fatherEmailController),
+                              )
+                            : SizedBox(),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CustomTextfield(
+                            labelText: 'Phone No',
+                            controller: parentPhoneController,
+                          ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    )
                   : SizedBox(),
               const SizedBox(height: 10),
               parentToBeAdded
                   ? Row(
-                    children: [
-                      Expanded(
-                        child: NicTextField(controller: parentNICController),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child:  CustomTextfield(
-                          labelText: 'Home and Street Address',
-                          controller: addressController,
-                        ),                      ),
-                    ],
-                  )
+                      children: [
+                        Expanded(
+                          child: NicTextField(controller: parentNICController),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: CustomTextfield(
+                            labelText: 'Home and Street Address',
+                            controller: addressController,
+                          ),
+                        ),
+                      ],
+                    )
                   : SizedBox(),
 
               const Divider(),
@@ -398,13 +397,17 @@ double? discountedTuitionFee;
                               labelText: "Class Name",
                               border: OutlineInputBorder(),
                             ),
-                            value: classProvider.selectedClass == "No Class Selected"
+                            value: classProvider.selectedClass ==
+                                    "No Class Selected"
                                 ? null
-                                : classProvider.selectedClass, // Set selected value
+                                : classProvider
+                                    .selectedClass, // Set selected value
 
-                            items: classProvider.mockClassList.map<DropdownMenuItem<String>>((classItem) {
+                            items: classProvider.mockClassList
+                                .map<DropdownMenuItem<String>>((classItem) {
                               return DropdownMenuItem<String>(
-                                value: classItem.classID, // Set the value to classItem.classID
+                                value: classItem
+                                    .classID, // Set the value to classItem.classID
                                 child: Text(
                                   '${classItem.classID} - ${classItem.classID}', // Display classID and className together
                                 ),
@@ -416,9 +419,11 @@ double? discountedTuitionFee;
 
                               // Update the provider when the user selects a value
                               if (value != null) {
-                                selectedClassID=value;
-                                classProvider.changeCLassName(value); // Update selectedClass in provider
-                                feeProvider.getAdmissionFeeByClass(classProvider.selectedClass);
+                                selectedClassID = value;
+                                classProvider.changeCLassName(
+                                    value); // Update selectedClass in provider
+                                feeProvider.getAdmissionFeeByClass(
+                                    classProvider.selectedClass);
                               }
                             },
 
@@ -497,7 +502,6 @@ double? discountedTuitionFee;
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-
                       SizedBox(
                         width: 250,
                         child: Text(
@@ -508,15 +512,10 @@ double? discountedTuitionFee;
                           ),
                         ),
                       ),
-
                       SizedBox(
                         width: 250,
                         child: Text(
-                          "Tuition Fee : ${studentProvider.giveDiscount
-                              ? (concessionController.text.isEmpty
-                              ? feeProvider.getTuitionFeeByClass(selectedClassID.toString())
-                              : discountedTuitionFee ?? feeProvider.getTuitionFeeByClass(selectedClassID.toString()))
-                              : feeProvider.getTuitionFeeByClass(selectedClassID.toString())}",
+                          "Tuition Fee : ${studentProvider.giveDiscount ? (concessionController.text.isEmpty ? feeProvider.getTuitionFeeByClass(selectedClassID.toString()) : discountedTuitionFee ?? feeProvider.getTuitionFeeByClass(selectedClassID.toString())) : feeProvider.getTuitionFeeByClass(selectedClassID.toString())}",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -560,15 +559,19 @@ double? discountedTuitionFee;
                   return ElevatedButton(
                     onPressed: () async {
                       FeeModel admissionFee = FeeModel(
-                        feeType: "Admission",  // Type of fee
-                        feeName: "Admission Fee",  // Name of the fee
-                        createdFeeAmount: feeProvider.getAdmissionFeeByClass(IdProvider().classId),  // Set the fee amount (you should define admissionFeeAmount)
-                        isFullyPaid: false,  // Assuming it's not paid yet
-                        dueDate: "2025-01-15",  // Set the due date
-                        feeDescription: "Initial admission fee for the student",  // Fee description
-                        feeMonth: "January",  // Fee month
-                        feeArrears: 0.0,  // No arrears initially
-                        generatedFeeAmount: 0,  // Same as created fee amount initially
+                        feeType: "Admission", // Type of fee
+                        feeName: "Admission Fee", // Name of the fee
+                        createdFeeAmount: feeProvider.getAdmissionFeeByClass(
+                            IdProvider()
+                                .classId), // Set the fee amount (you should define admissionFeeAmount)
+                        isFullyPaid: false, // Assuming it's not paid yet
+                        dueDate: "2025-01-15", // Set the due date
+                        feeDescription:
+                            "Initial admission fee for the student", // Fee description
+                        feeMonth: "January", // Fee month
+                        feeArrears: 0.0, // No arrears initially
+                        generatedFeeAmount:
+                            0, // Same as created fee amount initially
                       );
 
                       StudentModel studentData = StudentModel(
@@ -588,7 +591,7 @@ double? discountedTuitionFee;
                         reference: referenceController.text,
                         rollNo: rollNoController.text,
                         section: sectionController.text,
-                        studentAllFeeTypes: {},//this
+                        studentAllFeeTypes: {}, //this
                         photoLink: "",
                         concessionInPercent: !feeProvider.isConcessionInRupees
                             ? double.tryParse(concessionController.text) ?? 0.0
@@ -596,21 +599,30 @@ double? discountedTuitionFee;
                         concessionInPKR: feeProvider.isConcessionInRupees
                             ? double.tryParse(concessionController.text) ?? 0.0
                             : null, // Set it as null when it's not in PKR.
-
                       );
 
                       ParentModel parentData = ParentModel(
-                        parentId: idProvider.parentId,
-                        lastName: fatherLastNameController.text,
-                        firstName: fatherFirstNameController.text,
-                        phoneNumber: parentPhoneController.text,
-                        email: fatherEmailController.text,
-                        nic: parentNICController.text,
-                        completeAddress: addressController.text
-                      );
+                          parentId: idProvider.parentId,
+                          lastName: fatherLastNameController.text,
+                          firstName: fatherFirstNameController.text,
+                          phoneNumber: parentPhoneController.text,
+                          email: fatherEmailController.text,
+                          nic: parentNICController.text,
+                          completeAddress: addressController.text);
 
                       try {
-                        studentProvider.enrollStudent(studentData, parentData,studentProvider);
+                        // studentProvider.enrollStudent(studentData, parentData,studentProvider);
+                        // Send data to Firestore
+                        await sendDataToFirestore(
+                          studentData: studentData,
+                          parentData: parentData,
+                        );
+
+                        // Update parent's children IDs
+                        await updateParentChildrenIDs(
+                          parentId: parentData.parentId!,
+                          studentId: studentData.studentId!,
+                        );
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text("Student Accepted Successfully"),
@@ -618,8 +630,11 @@ double? discountedTuitionFee;
                         );
                         idProvider.getStudentID();
                         idProvider.generateStudentID();
-                        parentToBeAdded?idProvider.generateParentID():null;
-                        classProvider.addStudentToAClass(selectedClassID??"",generatedStudentID);///how to pass classID instead of className
+                        parentToBeAdded ? idProvider.generateParentID() : null;
+                        classProvider.addStudentToAClass(
+                            selectedClassID ?? "", generatedStudentID);
+
+                        ///how to pass classID instead of className
                       } catch (e) {
                         ScaffoldMessenger.of(
                           context,
@@ -640,7 +655,9 @@ double? discountedTuitionFee;
       ),
     );
   }
-  Widget _buildFeeConcessionToggle(StudentProvider studentProvider, FeeProvider feeProvider) {
+
+  Widget _buildFeeConcessionToggle(
+      StudentProvider studentProvider, FeeProvider feeProvider) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -652,7 +669,8 @@ double? discountedTuitionFee;
           ),
           color: Colors.blueGrey[50],
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -667,7 +685,8 @@ double? discountedTuitionFee;
                 Checkbox(
                   value: studentProvider.giveDiscount,
                   onChanged: (value) {
-                    studentProvider.onOffDiscount(value ?? false); // Toggle the concession status
+                    studentProvider.onOffDiscount(
+                        value ?? false); // Toggle the concession status
                     if (value == false) {
                       // Reset values when the discount is turned off
                       concessionController.clear();
@@ -695,7 +714,8 @@ double? discountedTuitionFee;
             ),
             color: Colors.blueGrey[50],
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
               child: Row(
                 children: [
                   const Text(
@@ -708,14 +728,20 @@ double? discountedTuitionFee;
                   ),
                   const SizedBox(width: 10),
                   ToggleButtons(
-                    isSelected: [feeProvider.isConcessionInRupees, !feeProvider.isConcessionInRupees],
+                    isSelected: [
+                      feeProvider.isConcessionInRupees,
+                      !feeProvider.isConcessionInRupees
+                    ],
                     onPressed: (int index) {
-                      feeProvider.toggleConcessionType(index == 0); // Toggle between Rupees and Percentage
+                      feeProvider.toggleConcessionType(
+                          index == 0); // Toggle between Rupees and Percentage
 
                       // Clear the previous value when toggling between types
-                      concessionController.clear(); // This clears the value in the TextField
+                      concessionController
+                          .clear(); // This clears the value in the TextField
                       setState(() {
-                        discountedTuitionFee = null; // Reset discounted fee until new value is entered
+                        discountedTuitionFee =
+                            null; // Reset discounted fee until new value is entered
                       });
                     },
                     borderRadius: BorderRadius.circular(12),
@@ -747,36 +773,46 @@ double? discountedTuitionFee;
             ),
             color: Colors.blueGrey[50],
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
               child: TextField(
                 controller: concessionController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Enter Concession Value',
-                  hintText: feeProvider.isConcessionInRupees ? 'PKR Amount' : '% Value',
+                  hintText: feeProvider.isConcessionInRupees
+                      ? 'PKR Amount'
+                      : '% Value',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 ),
                 onChanged: (value) {
                   if (value.isNotEmpty) {
                     setState(() {
                       if (feeProvider.isConcessionInRupees) {
                         // Apply direct deduction in PKR (use null-aware operators)
-                        discountedTuitionFee = (feeProvider.getTuitionFeeByClass(selectedClassID.toString()) ?? 0.0) -
-                            (double.tryParse(value) ?? 0.0);
+                        discountedTuitionFee =
+                            (feeProvider.getTuitionFeeByClass(
+                                        selectedClassID.toString()) ??
+                                    0.0) -
+                                (double.tryParse(value) ?? 0.0);
                       } else {
                         // Apply percentage deduction
                         discountedTuitionFee = applyPercentageDiscount(
-                          feeProvider.getTuitionFeeByClass(selectedClassID.toString()) ?? 0.0,
+                          feeProvider.getTuitionFeeByClass(
+                                  selectedClassID.toString()) ??
+                              0.0,
                           double.tryParse(value) ?? 0.0,
                         );
                       }
                     });
                   } else {
                     setState(() {
-                      discountedTuitionFee = null; // Reset discounted fee if input is cleared
+                      discountedTuitionFee =
+                          null; // Reset discounted fee if input is cleared
                     });
                   }
                 },
@@ -786,7 +822,6 @@ double? discountedTuitionFee;
         ],
 
         const SizedBox(height: 20),
-
       ],
     );
   }
@@ -796,6 +831,90 @@ double? discountedTuitionFee;
     return originalFee - (originalFee * (percentage / 100));
   }
 
+  Future<void> updateParentChildrenIDs({
+    required String parentId,
+    required String studentId,
+  }) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-TextEditingController concessionController= TextEditingController();
+    try {
+      // Get the current parent document
+      DocumentSnapshot parentDoc =
+          await firestore.collection('parents').doc(parentId).get();
+
+      if (parentDoc.exists) {
+        // Get the current list of children IDs
+        List<String> childrenIDs =
+            List<String>.from(parentDoc['childrenIDs'] ?? []);
+
+        // Add the new student ID to the list
+        if (!childrenIDs.contains(studentId)) {
+          childrenIDs.add(studentId);
+        }
+
+        // Update the parent document with the new list of children IDs
+        await firestore.collection('parents').doc(parentId).update({
+          'childrenIDs': childrenIDs,
+        });
+
+        print('Parent children IDs updated successfully!');
+      }
+    } catch (e) {
+      print('Error updating parent children IDs: $e');
+    }
+  }
+
+  Future<void> sendDataToFirestore({
+    required StudentModel studentData,
+    required ParentModel parentData,
+  }) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      // Add parent data to the 'parents' collection
+      await firestore.collection('parents').doc(parentData.parentId).set({
+        'parentId': parentData.parentId,
+        'firstName': parentData.firstName,
+        'lastName': parentData.lastName,
+        'nic': parentData.nic,
+        'email': parentData.email,
+        'phoneNumber': parentData.phoneNumber,
+        'completeAddress': parentData.completeAddress,
+        'childrenIDs': parentData.childrenIDs ??
+            [], // Initialize with an empty list if null
+      });
+
+      // Add student data to the 'students' collection
+      await firestore.collection('students').doc(studentData.studentId).set({
+        'firstName': studentData.firstName,
+        'lastName': studentData.lastName,
+        'gender': studentData.gender,
+        'dateOfBirth': studentData.dateOfBirth,
+        'placeOfBirth': studentData.placeOfBirth,
+        'dateOfAdmission': studentData.dateOfAdmission,
+        'photoLink': studentData.photoLink,
+        'otherPhoneNo': studentData.otherPhoneNo,
+        'emergencyContactNo': studentData.emergencyContactNo,
+        'completeAddress': studentData.completeAddress,
+        'studentId': studentData.studentId,
+        'rollNo': studentData.rollNo,
+        'classID': studentData.classID,
+        'section': studentData.section,
+        'previousSchoolName': studentData.previousSchoolName,
+        'reasonOfLeaving': studentData.reasonOfLeaving,
+        'reference': studentData.reference,
+        'parentId': studentData.parentId,
+        'concessionInPercent': studentData.concessionInPercent,
+        'concessionInPKR': studentData.concessionInPKR,
+        'studentAllFeeTypes': studentData.studentAllFeeTypes
+            ?.map((key, value) => MapEntry(key, value.toJson())),
+      });
+
+      print('Data sent to Firestore successfully!');
+    } catch (e) {
+      print('Error sending data to Firestore: $e');
+    }
+  }
+
+  TextEditingController concessionController = TextEditingController();
 }

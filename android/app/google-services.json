@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "459184878379",
-    "project_id": "school-b3300",
-    "storage_bucket": "school-b3300.firebasestorage.app"
+    "project_number": "967689631165",
+    "project_id": "schoolsystem-40ddd",
+    "storage_bucket": "schoolsystem-40ddd.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:459184878379:android:324d02df6b0e499cdccb6e",
+        "mobilesdk_app_id": "1:967689631165:android:ad8d06001d40ecd6e08ed4",
         "android_client_info": {
           "package_name": "com.example.school"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBSp_3VmacZ3w1L4kZTuUNmM6AAXJOIIHA"
+          "current_key": "AIzaSyB3wOjRDwdl-KAjaFSJweDYdgnupASNDpk"
         }
       ],
       "services": {
